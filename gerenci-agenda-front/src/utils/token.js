@@ -1,15 +1,15 @@
-export function saveTokens(access, refresh){
+export function saveTokens(access_token, refresh_token){
 
-    localStorage.setItem("access", access);
-    localStorage.setItem("refresh", refresh);
+    localStorage.setItem("access_token", access_token);
+    localStorage.setItem("refresh_token", refresh_token);
 }
 
 export function getAccess(){
-    return localStorage.getItem("access");
+    return localStorage.getItem("access_token");
 }
 
 export function getRefresh(){
-    return localStorage.getItem("refresh");
+    return localStorage.getItem("refresh_token");
 }
 
 export function clearTokens(){

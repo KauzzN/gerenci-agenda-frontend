@@ -18,7 +18,7 @@ function Login() {
     try {
       const data = await login(username, password);
 
-      saveTokens(data.access_token, data.refresh_token);
+      saveTokens(data.tokens.access_token, data.tokens.refresh_token);
 
       navigate("/dashboard");
     } catch (err) {
