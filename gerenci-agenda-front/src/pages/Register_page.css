@@ -1,0 +1,178 @@
+.Register-body {
+    min-height: 100vh;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+
+    padding: 20px;
+
+    background: #121212;
+}
+
+.header-register {
+    margin-top: 32px;
+    text-align: center;
+}
+
+.h2-register-gerenci {
+    color: white;
+    font-size: 2.5rem;
+    text-decoration: underline #f97316;
+}
+
+.span-register-agenda {
+    color: #f97316;
+}
+
+.header-register small {
+    color: #9ca3af;
+
+    margin-top: -20px;
+    margin-bottom: 3rem;
+    display: block;
+
+    font-size: .95rem;
+}
+
+.container-register {
+    width: 100%;
+    max-width: 420px;
+
+    background: #1e1e1e;
+
+    padding: 40px 30px;
+
+    border-radius: 18px;
+    border: 1px solid #2a2a2a;
+
+    box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.35);
+
+    animation: fade .5s ease;
+    transition: .3s;
+}
+
+.container-register:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.45);
+}
+
+.container-register h2 {
+    text-align: center;
+
+    color: #f97316;
+    font-size: 2rem;
+
+    margin-bottom: 8px;
+}
+
+.register-form {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.register-box {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+.register-input {
+    background: #2a2a2a;
+
+    color: white;
+    font-size: 0.90rem;
+
+    border: none;
+    border-radius: 10px;
+
+    padding: 14px;
+
+    outline: none;
+
+    transition: .25s;
+}
+
+.register-input:focus {
+    border: 1px solid #f97316;
+
+    box-shadow: 0 0 10px rgba(249,115,22, .3);
+}
+
+.register-btn {
+    width: 100%;
+
+    padding: 14px;
+
+    background: #f97316;
+    color: white;
+
+    border: none;
+    border-radius: 10px;
+
+    cursor: pointer;
+
+    font-weight: bold;
+    font-size: 1rem;
+
+    letter-spacing: .5px;
+
+    transition: .2s;
+}
+
+.register-btn:hover {
+    background-color: #fb923c;
+
+    transform: translateY(-2px);
+}
+
+.login {
+    margin-top: 20px;
+
+    text-align: center;
+}
+
+.login p {
+    color: #9ca3af;
+}
+
+.login a {
+    color: #f97316;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.login a:hover {
+    text-decoration: underline;
+}
+
+@keyframes fade {
+
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@media(max-width:480px){
+
+    .container-register{
+
+        padding:28px 22px;
+
+    }
+
+    .header-register h2{
+
+        font-size:2rem;
+
+    }
+
+}
