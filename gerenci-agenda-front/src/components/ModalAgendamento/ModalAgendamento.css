@@ -1,0 +1,121 @@
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.6);
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.modal-container {
+    background: #1e1e1e;
+    padding: 25px;
+    
+    border-radius: 16px;
+    width: 90%;
+    max-width: 400px;
+
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.modal-container h2 {
+    color: #f97316;
+}
+
+.modal-container input {
+    padding: 12px;
+    border-radius: 10px;
+    border: none;
+    background: #2a2a2a;
+    color: white;
+    outline: none;
+
+    margin-bottom: 6px;
+}
+
+.modal-container input:focus {
+    border: 1px solid #f97316;
+    box-shadow: 0 0 10px rgba(249, 115, 22, .3);
+}
+
+.select-wrapper {
+    position: relative;
+    width: 100%;
+}
+
+.select-wrapper .arrow {
+    position: absolute;
+    right: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #f97316;
+    pointer-events: none;
+    font-size: 1.2rem;
+}
+
+.modal-container select {
+    width: 100%;
+    padding: 14px;
+
+    background: #2a2a2a;
+    color: white;
+
+    border: none;
+    border-radius: 10px;
+
+    outline: none;
+
+    font-size: 0.95rem;
+
+    cursor: pointer;
+
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+
+    transition: .25s;
+}
+
+.modal-container select:focus {
+    border: 1px solid #f97316;
+    box-shadow: 0 0 10px rgba(249, 115, 22, .3);
+}
+
+.modal-container select:hover {
+    background: #333333;
+}
+
+.modal-container form {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.modal-actions {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+.modal-actions button {
+    flex: 1;
+    padding: 10px;
+    border-radius: 10px;
+    border: none;
+    cursor: pointer;
+    
+    margin-top: 10px;
+}
+
+.modal-actions button[type="submit"] {
+    background: #f97316;
+    color: white;
+}
+
+.modal-actions button[type="button"] {
+    background: #2a2a2a;
+    color: white;
+}
