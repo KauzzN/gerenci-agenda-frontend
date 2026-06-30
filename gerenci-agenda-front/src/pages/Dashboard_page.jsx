@@ -20,8 +20,6 @@ function Dashboard () {
         try {
             const data = await listarAgendamentos();
 
-            console.log("API:", data)
-
             setAgendamentos(data.agendamentos);
 
         } catch (err) {
@@ -34,7 +32,9 @@ function Dashboard () {
 
     function agruparPorDia(lista) {
     return lista.reduce((acc, item) => {
+
         const data = new Date(item.horario);
+
         const chave = `${data.getDate()}/${data.getMonth() + 1}`;
 
         if (!acc[chave]) acc[chave] = [];

@@ -1,4 +1,5 @@
 import "./FloatingButton.css"
+import toast from "react-hot-toast";
 
 function FloatingButton({ onClick }) {
     return (

@@ -1,6 +1,7 @@
 import { useState } from "react"
 import { criarAgendamento } from "../../services/agendamento"
 import "./ModalAgendamento.css"
+import toast from "react-hot-toast";
 
 function ModalAgendamento({onClose, onCreated}) {
     
@@ -30,17 +31,19 @@ function ModalAgendamento({onClose, onCreated}) {
     async function handleSubmit(e) {
         e.preventDefault();
 
-        console.log("clicou no submit")
 
         if (!nome || !horario) return;
 
+        setLoading(true);
+
         try {
-            setLoading(true);
 
             await criarAgendamento({
                 nome, 
                 horario: horarioFinal
             });
+
+            toast.success("Agendamento criado!")
 
             setNome("");
             setHorario("");
@@ -48,7 +51,10 @@ function ModalAgendamento({onClose, onCreated}) {
             onCreated();
             onClose();
         } catch (err) {
+
+            toast.error(`${err}`)
             console.log("erro ao criar agendamento")
+
         } finally {
             setLoading(false)
         }
@@ -108,7 +114,9 @@ function ModalAgendamento({onClose, onCreated}) {
                                 type="submit"
                                 disabled={loading}
                             >
-                                {loading ? "Salvando..." : "Salvar"}
+                                {loading 
+                                    ? "Salvando..."
+                                    : "Salvar"}
                             </button>
 
                         </div>

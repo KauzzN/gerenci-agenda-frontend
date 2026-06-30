@@ -5,6 +5,8 @@ import { register } from "../services/auth"
 import { saveTokens } from "../utils/token"
 import "./Register_page.css"
 
+import toast from "react-hot-toast"
+
 function Register () {
 
     const navigate = useNavigate();
@@ -13,18 +15,27 @@ function Register () {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
 
+    const [loading, setLoading] = useState(false);
+
     async function handleSubmit(e) {
         e.preventDefault()
+
+        setLoading(true)
 
         try {
             const data = await register(username, email, password);
 
-            saveTokens(data.access_token, data.refresh_token);
+            saveTokens(data.tokens.access_token, data.tokens.refresh_token);
+
+            toast.success("Conta criada com sucesso!")
 
             navigate("/dashboard");
         } catch (err) {
+
             console.log("Erro login:", err);
-            alert("Cadastro inválido")
+            toast.error("usuario ou email já cadastrados")
+        } finally {
+            setLoading(false)
         }
     }
     
@@ -72,8 +83,15 @@ function Register () {
 
                     </div>
 
-                    <button type="submit" className="register-btn">
-                        Cadastrar
+                    <button 
+                        type="submit" 
+                        className="register-btn"
+                        disabled={loading}>
+                        {
+                            loading
+                            ? "Criando..."
+                            : "Criar"
+                        }
                     </button>
                 </form>
 

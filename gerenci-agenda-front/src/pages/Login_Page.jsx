@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom"
 import { login } from "../services/auth"
 import { saveTokens } from "../utils/token"
 import './Login_Page.css'
+import toast from "react-hot-toast"
 
 function Login() {
 
@@ -12,18 +13,27 @@ function Login() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
+  const [loading, setLoading] = useState(false);
+
   async function handleSubmit(e) {
     e.preventDefault()
 
+    setLoading(true);
+
     try {
       const data = await login(username, password);
+
+      toast.success("Bem-vindo!")
 
       saveTokens(data.tokens.access_token, data.tokens.refresh_token);
 
       navigate("/dashboard");
     } catch (err) {
+
+      toast.error("Usuário ou senha inválidos.")
       console.log("Erro login:", err);
-      alert("Login inválido")
+    } finally {
+      setLoading(false)
     }
     
   }
@@ -63,8 +73,13 @@ function Login() {
             
           </div>
 
-          <button type='submit' className="login-btn">
-            Entrar
+          <button type='submit' className="login-btn"
+            disabled={loading}>
+              {
+                loading
+                ? "Entrando..."
+                : "Entrar"
+              }
           </button>
 
         </form>
