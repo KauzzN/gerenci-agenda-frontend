@@ -1,0 +1,36 @@
+.next-container {
+    width: 90%;
+
+    margin: 20px 0;
+    padding: 20px;
+
+    background: #1e1e1e;
+
+    border: 1px solid #2b2b2b;
+    border-radius: 14px;
+
+    display: flex;
+    flex-direction: column;
+
+    gap: 8px;
+}
+
+.next-container small {
+    color: #888;
+    font-size: .9rem;
+}
+
+.next-container h2 {
+    font-size: 2rem;
+    font-weight: 700;
+}
+
+.next-container p {
+    color: #bdbdbd;
+}
+
+.next-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}

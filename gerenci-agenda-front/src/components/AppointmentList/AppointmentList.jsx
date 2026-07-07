@@ -1,4 +1,5 @@
 import AppointmentCard from "../AppointmentCard/AppointmentCard";
+import "./AppointmentList.css"
 
 function AppointmentList({ agendamentos }) {
 

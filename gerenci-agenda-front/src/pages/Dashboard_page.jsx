@@ -7,6 +7,7 @@ import "./Dashboard_page.css"
 import ModalAgendamento from "../components/ModalAgendamento/ModalAgendamento";
 import { me } from "../services/auth";
 import DashboardStats from "../components/DashboardStats/DashboardStats";
+import NextAppointment from "../components/NextAppointment/NextAppointment";
 
 function Dashboard () {
 
@@ -70,6 +71,8 @@ function Dashboard () {
             <Header />
 
             <DashboardStats />
+
+            <NextAppointment />
 
             <main className="dashboard-content">
 
