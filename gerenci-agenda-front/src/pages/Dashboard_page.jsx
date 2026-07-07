@@ -5,6 +5,8 @@ import AppointmentList from "../components/AppointmentList/AppointmentList";
 import FloatingButton from "../components/FloatingButton/FloatingButton";
 import "./Dashboard_page.css"
 import ModalAgendamento from "../components/ModalAgendamento/ModalAgendamento";
+import { me } from "../services/auth";
+import DashboardStats from "../components/DashboardStats/DashboardStats";
 
 function Dashboard () {
 
@@ -66,6 +68,8 @@ function Dashboard () {
         <div className="dashboard">
             
             <Header />
+
+            <DashboardStats />
 
             <main className="dashboard-content">
 

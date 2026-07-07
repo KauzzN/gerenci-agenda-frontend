@@ -19,6 +19,12 @@ export async function register(username, email, password) {
     return response.data
 }
 
+export async function me() {
+    const response = await api.get("usr/me")
+
+    return response.data
+}
+
 export async function logout() {
     
 }

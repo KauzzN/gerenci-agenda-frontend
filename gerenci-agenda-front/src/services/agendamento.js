@@ -15,6 +15,13 @@ export async function criarAgendamento({ nome, horario}) {
     return response.data
 }
 
+export async function buscarDashboard() {
+    const response = await api.get("/agendar/dashboard")
+
+    return response.data
+}
+
+
 export async function atualizarAgendamento() {
     
 }
