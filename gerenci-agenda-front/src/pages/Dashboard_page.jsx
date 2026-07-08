@@ -70,15 +70,24 @@ function Dashboard () {
             
             <Header />
 
+            <div className="dashboard-divider"/>
+
             <DashboardStats />
 
-            <NextAppointment />
 
             <main className="dashboard-content">
 
-                <AppointmentList 
-                    agendamentos={agendamentos} 
-                    />
+                <div className="dashboard-main">
+                    <AppointmentList 
+                        agendamentos={agendamentos} 
+                        />
+                    
+                </div>
+                
+                <aside className="dashboard-side">
+                    <NextAppointment />
+                </aside>
+
             </main>
 
             <FloatingButton onClick={() => setOpenModal(true)}/>

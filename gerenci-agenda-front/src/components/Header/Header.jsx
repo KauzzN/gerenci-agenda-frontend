@@ -1,5 +1,8 @@
 import "./Header.css"
 import { useAuth } from "../../hooks/useAuh";
+import { 
+    CalendarDays, Home, LogOut, LayoutDashboard
+} from "lucide-react";
 
 function Header ({ onLogout }) {
 
@@ -26,23 +29,28 @@ function Header ({ onLogout }) {
 
     return (
         <header className="header">
-            <div>
+            <div className="header-container">
                 <h1>
-                    {saudacao()}, <span>{user?.username}👋</span>
+                    <LayoutDashboard size={24}/> {saudacao()} <span>{user?.username}</span> 
                 </h1>
-                <p>{formatarDataAtual()}</p>
 
-                <small>
-                    Seus Agendamentos de hoje
-                </small>
+                <small>Aqui está o resumo do seu dia.</small>
             </div>
 
-            <button 
-                className="logout-btn"
-                onClick={onLogout}    
-            >
-                Sair
-            </button>
+            <div className="header-second-container">
+
+                <CalendarDays size={18}/><span>{formatarDataAtual()}</span>
+
+                <div className="header-divider"/>
+
+                <button 
+                    className="logout-button"
+                    onClick={onLogout}    
+                    >
+                    <LogOut size={18}/> 
+                    Sair
+                </button>
+            </div>
         </header>
     );
 }

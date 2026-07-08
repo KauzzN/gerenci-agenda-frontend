@@ -1,31 +1,129 @@
 .stats-container {
-    display: flex;
+    display: grid;
+    grid-template-columns: repeat(4,1fr);
+    gap: 20px;
+
     justify-content: center;
     align-items: center;
     
-
-    gap: 20px;
 
     padding: 10px 15px;
     width: 100%;
 }
 
 .stat-card {
-    padding: 10px 12px;
-
     width: 100%;
-    max-width: 150px;
+    min-width: 0;
+
+    background: linear-gradient(
+        180deg,
+        var(--bg-secondary) 0%,
+        #1b2536 100%
+    );
+
+    border: 1px solid var(--border);
+
+    box-shadow: 0 8px 20px rgba(0,0,0,.15);
+
+    padding: 20px;
+
+    border-radius: 16px;
 
     display: flex;
+
     flex-direction: column;
+    justify-content: space-between;
 
-    background: #1e1e1e;
+    transition:
+        transform .25s,
+        box-shadow .25s,
+        border-color .25s;
+        
+    cursor: pointer;
+}
 
-    border: 1px solid #2a2a2a;
-    border-radius: 10px;
+.stat-card:hover {
+    transform: translateY(-4px);
+    border-color: var(--primary);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, .25);
+}
+
+.stat-card-overall {
+    border-top: 4px solid var(--normal);
+}
+
+.stat-card-success {
+    border-top: 4px solid var(--success);
+}
+
+.stat-card-pending {
+    border-top: 4px solid var(--warning);
+}
+
+.stat-card-missed {
+    border-top: 4px solid var(--danger);
+}
+
+
+
+.stat-icons {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
 .stat-card p {
-    text-align: left;
-    font-size: 1.13rem;
+    font-size: .9rem;
+    color: var(--text-secondary);
+}
+
+.stat-card h2 {
+    font-size: 2.5rem;
+    font-weight: 700;
+}
+
+.icon-users{
+
+    color: var(--normal);
+}
+
+.icon-success{
+
+    color: var(--success);
+}
+
+.icon-pending{
+
+    color: var(--warning);
+}
+
+.icon-missed{
+    color: var(--danger);
+}
+
+@media (max-width: 900px) {
+    .stats-container {
+        grid-template-columns: repeat(2,1fr);
+    }
+}
+
+@media (max-width: 726px) {
+
+    .stats-container {
+        gap:18px;
+    }
+
+    .stat-card {
+        padding: 14px;
+    }
+}
+
+@media (max-width: 480px) {
+    .stat-card h2 {
+        font-size: 1.8rem;
+    }
+
+    .stat-card p {
+        font-size: .75rem;
+    }
 }

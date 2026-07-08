@@ -2,6 +2,8 @@ import "./ DashboardStats.css"
 import { useEffect } from "react";
 import { buscarDashboard } from "../../services/agendamento"
 import { useState } from "react";
+import { UsersIcon, CheckCircle, Clock4Icon, UserRoundXIcon } from "lucide-react";
+
 
 function DashboardStats () {
     
@@ -35,24 +37,61 @@ function DashboardStats () {
     return (
         <div className="stats-container">
 
-            <div className="stat-card">
-                <p>Clientes hoje</p>
-                <h2>{total}</h2>
+            <div className="stat-card stat-card-overall">
+                <div className="stat-card-info">
+                    <p>Clientes hoje</p>
+                </div>
+
+                <div className="stat-icons">
+                    <h2>{total}</h2>
+                    <UsersIcon 
+                    className="icon-users"
+                    size={24}/>
+                </div>
+                <p>Agendamentos</p>
             </div>
 
-            <div className="stat-card">
-                <p>clientes atendidos</p>
-                <h2>{atendidos}</h2>
+            <div className="stat-card stat-card-success">
+                <div className="stat-card-info">
+                    <p>Atendidos</p>
+                </div>
+
+                <div className="stat-icons">
+                    <h2>{atendidos}</h2>
+                    <CheckCircle 
+                    className="icon-success"
+                    size={24}/>
+                </div>
+
+                <p>Concluidos</p>
             </div>
 
-            <div className="stat-card">
-                <p>clientes pendentes</p>
-                <h2>{pendentes}</h2>
+            <div className="stat-card stat-card-pending">
+                <div className="stat-card-info">
+                    <p>Pendentes</p>
+                </div>
+
+                <div className="stat-icons">
+                    <h2>{pendentes}</h2>
+                    <Clock4Icon 
+                    className="icon-pending"
+                    size={24}/>
+                </div>
+                <p>Aguardando</p>
             </div>
 
-            <div className="stat-card">
-                <p>clientes faltantes</p>
-                <h2>{faltaram}</h2>
+            <div className="stat-card stat-card-missed">
+                <div className="stat-card-info">
+                    <p>Faltaram</p>
+                </div>
+
+                <div className="stat-icons">
+                    <h2>{faltaram}</h2>
+                    <UserRoundXIcon 
+                    className="icon-missed"
+                    size={24}/>
+                </div>
+                <p>Ausências</p>
             </div>
         </div>
 

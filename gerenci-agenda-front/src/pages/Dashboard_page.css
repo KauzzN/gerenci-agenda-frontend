@@ -1,6 +1,6 @@
 .dashboard {
     min-height: 100vh;
-    background: #121212;
+    background: var(--bg-primary);
     color: white;
 }
 
@@ -16,10 +16,21 @@
 }
 
 .dashboard-content {
-    max-width: 900px;
-    margin: auto;
+    display: flex;
+    gap: 24px;
+    padding: 32px;
+}
 
-    padding: 40px 20px;
+.dashboard-main {
+    flex: 2;
+}
+
+.dashboard-side {
+    flex: 1;
+
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
 }
 
 .dashboard-top {
@@ -29,6 +40,17 @@
     align-items: center;
 
     margin-bottom: 30px;
+}
+
+.dashboard-divider {
+    width: 95%;
+    height: 2px;
+
+    background: var(--border);
+
+    border-radius: 20px;
+
+    margin: 0 32px 24px
 }
 
 .logout-btn {
@@ -61,4 +83,18 @@
     display: flex;
     flex-direction: column;
     gap: 19px;
+}
+
+@media (max-width: 900px) {
+    .dashboard-content {
+        flex-direction: column;
+    }
+
+    .dashboard-side {
+        order: 1;
+    }
+    
+    .dashboard-main {
+        order: 2;
+    }
 }

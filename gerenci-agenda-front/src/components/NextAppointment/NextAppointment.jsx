@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react"
 import { buscarDashboard } from "../../services/agendamento";
 import { formatarHorario } from "../../utils/formatarHorario";
+import { ClockIcon, User2Icon } from "lucide-react";
 
 import "./NextAppointment.css"
 
@@ -10,8 +11,7 @@ function NextAppointment () {
 
     const [proximo, setProximo] = useState();
 
-    useEffect(() => {
-        async function carregarEstatisticas() {
+    async function carregarEstatisticas() {
             
             try {
                 const data = await buscarDashboard();
@@ -25,27 +25,60 @@ function NextAppointment () {
             }
         }
 
+    useEffect(() => {
         carregarEstatisticas()
+
+        const interval = setInterval(() => {
+            carregarEstatisticas()
+        }, 10000)
+
+        return () => clearInterval(interval)
+
     }, []);
 
     return (
         <div className="next-container">
 
             <div className="next-header">
-                <span>⏰</span>
                 <small>Próximo atendimento</small>
+                <ClockIcon size={24}/>
             </div>
 
-            {
-                proximo ? (
-                    <>
-                        <h2>{proximo.nome}</h2>
-                        <p> {formatarHorario(proximo.horario)}</p>
-                    </>
-                ) : (
-                    <p>Nenhum atendimento restante 🎉</p>
-                )
-            }
+            <div className="next-divider"/>
+
+            <div className="next-container-infos">
+
+                <div className="user-avatar">
+                    <User2Icon />
+                </div>
+
+                <div className="next-infos">
+
+                    {
+                        proximo ? (
+                            <>
+                                <h2>{proximo.nome}</h2>
+                            </>
+                        ) : (
+                            <p>Bom trabalho por hoje! 🎉</p>
+                        )
+                    }
+                </div>
+            </div>
+
+            <div className="next-info-horario">
+
+                {
+                    proximo ? (
+                        <>
+                        <ClockIcon />
+                            <p> Horario: {formatarHorario(proximo.horario)}</p>
+                        </>
+                    ) : (
+                        <p></p>
+                    )
+                }
+            </div>
         </div>
     )
 }

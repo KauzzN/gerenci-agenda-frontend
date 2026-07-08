@@ -1,0 +1,34 @@
+:root {
+    /* Backgrounds */
+
+    --bg-primary: #111827;
+    --bg-secondary: #1f2937;
+    --bg-hover: #293548;
+
+    /* Borders */
+
+    --border: #37415172;
+
+    /* Text */
+
+    --text-primary: #f9fafb;
+    --text-secondary: #9ca3af;
+
+    /* Brand */
+
+    --primary: #3b92f6;
+    --primary-hover: #2563eb;
+
+    /* Status */
+
+    --normal: #3b82f6;
+    --success: #22c55e;
+    --warning: #f59e0b;
+    --danger: #ef4444;
+
+    /* Extras*/
+
+    --shadow: 0 8px 20px rgba(0,0,0,.25);
+
+    --radius: 14px;
+}

@@ -1,22 +1,28 @@
 import "./AppointmentCard.css"
-import { formatarHorario } from "../../utils/formatarHorario"
+import { formatarDataCard } from "../../utils/formatarHorario"
+import StatusBadge from "../StatusBadge/StatusBadge"
 
 function AppointmentCard({ agendamento }) {
-    return (
-        <div className="card">
-            <div>
+    const dataFormatada = formatarDataCard(agendamento.horario)
 
-                <h3>{agendamento.nome}</h3>
-                <p>{formatarHorario(agendamento.horario)}</p>
+    return (
+        <div className="card-container">
+
+            <div className="card-box">
+
+                <div className="card-time">
+                    <h2>{dataFormatada.horario}</h2>
+                    <p>{dataFormatada.dia}</p>
+                </div>
+
+                <div className="card-name">
+                    <h3>{agendamento.nome}</h3>
+                    <small>Cliente agendado</small>
+                </div>
             </div>
 
             <div>
-                {
-                    agendamento.atendido
-
-                    ? <span className="done">✔ Atendido</span>
-                    : <span className="pending">⏳ Pendente</span>
-                }
+                <StatusBadge status={agendamento.status } />
             </div>
         </div>
     )
