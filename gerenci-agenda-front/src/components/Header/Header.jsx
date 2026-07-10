@@ -1,5 +1,5 @@
 import "./Header.css"
-import { useAuth } from "../../hooks/useAuh";
+import { useAuth } from "../../hooks/useAuth.js";
 import { 
     CalendarDays, Home, LogOut, LayoutDashboard
 } from "lucide-react";

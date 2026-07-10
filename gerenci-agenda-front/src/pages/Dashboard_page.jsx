@@ -5,7 +5,7 @@ import AppointmentList from "../components/AppointmentList/AppointmentList";
 import FloatingButton from "../components/FloatingButton/FloatingButton";
 import "./Dashboard_page.css"
 import ModalAgendamento from "../components/ModalAgendamento/ModalAgendamento";
-import { me } from "../services/auth";
+import { logout, me } from "../services/auth";
 import DashboardStats from "../components/DashboardStats/DashboardStats";
 import NextAppointment from "../components/NextAppointment/NextAppointment";
 
@@ -14,6 +14,8 @@ function Dashboard () {
     const [agendamentos, setAgendamentos] =  useState([]);
     const [loading, setLoading] = useState(false);
     const [openModal, setOpenModal] = useState(false);
+
+    const [agendamentoSelecionado, setAgendamentoSelecionado] = useState(null);
 
     async function carregarAgendamentos() {
         if (loading) return;
@@ -44,8 +46,13 @@ function Dashboard () {
         acc[chave].push(item);
 
         return acc;
-    }, {});
-}
+        }, {});
+    }
+
+    function handleEditar(agendamento) {
+        setAgendamentoSelecionado(agendamento);
+        setOpenModal(true)
+    }
 
     useEffect(() => {
 
@@ -68,7 +75,7 @@ function Dashboard () {
     return (
         <div className="dashboard">
             
-            <Header />
+            <Header onLogout={logout}/>
 
             <div className="dashboard-divider"/>
 
@@ -80,6 +87,7 @@ function Dashboard () {
                 <div className="dashboard-main">
                     <AppointmentList 
                         agendamentos={agendamentos} 
+                        onEdit={handleEditar}
                         />
                     
                 </div>
@@ -90,11 +98,18 @@ function Dashboard () {
 
             </main>
 
-            <FloatingButton onClick={() => setOpenModal(true)}/>
+            <FloatingButton onClick={() => {
+                setAgendamentoSelecionado(null)
+                setOpenModal(true)
+            }}/>
 
             {openModal && (
                 <ModalAgendamento
-                    onClose={() => setOpenModal(false)}
+                    agendamento={agendamentoSelecionado}
+                    onClose={() => {
+                        setOpenModal(false);
+                        setAgendamentoSelecionado(null);
+                    }}
                     onCreated={carregarAgendamentos}
                 />
             )}

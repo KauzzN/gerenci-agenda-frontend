@@ -2,11 +2,18 @@ import "./AppointmentCard.css"
 import { formatarDataCard } from "../../utils/formatarHorario"
 import StatusBadge from "../StatusBadge/StatusBadge"
 
-function AppointmentCard({ agendamento }) {
+function AppointmentCard({ agendamento, onEdit }) {
     const dataFormatada = formatarDataCard(agendamento.horario)
 
     return (
-        <div className="card-container">
+        <div 
+            className="card-container"
+            onClick={() => {
+                console.log("clicou")
+                console.log(agendamento)
+                onEdit(agendamento)}}
+                >
+            
 
             <div className="card-box">
 

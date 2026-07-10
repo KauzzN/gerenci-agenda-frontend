@@ -9,7 +9,7 @@
 }
 
 .modal-container {
-    background: #1e1e1e;
+    background: var(--bg-primary);
     padding: 25px;
     
     border-radius: 16px;
@@ -21,15 +21,22 @@
     gap: 15px;
 }
 
-.modal-container h2 {
-    color: #f97316;
+.modal-header {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.modal-header p {
+    color: var(--text-secondary);
+    font-size: .9rem;
 }
 
 .modal-container input {
     padding: 12px;
     border-radius: 10px;
-    border: none;
-    background: #2a2a2a;
+    border: 1px solid var(--border);
+    background: var(--bg-secondary);
     color: white;
     outline: none;
 
@@ -37,8 +44,8 @@
 }
 
 .modal-container input:focus {
-    border: 1px solid #f97316;
-    box-shadow: 0 0 10px rgba(249, 115, 22, .3);
+    border: 1px solid var(--primary);
+    box-shadow: 0 0 10px rgba(57, 130, 247, .30);
 }
 
 .select-wrapper {
@@ -51,7 +58,7 @@
     right: 14px;
     top: 50%;
     transform: translateY(-50%);
-    color: #f97316;
+    color: var(--primary);
     pointer-events: none;
     font-size: 1.2rem;
 }
@@ -60,10 +67,10 @@
     width: 100%;
     padding: 14px;
 
-    background: #2a2a2a;
+    background: var(--bg-secondary);
     color: white;
 
-    border: none;
+    border: 1px solid var(--border);
     border-radius: 10px;
 
     outline: none;
@@ -80,12 +87,12 @@
 }
 
 .modal-container select:focus {
-    border: 1px solid #f97316;
-    box-shadow: 0 0 10px rgba(249, 115, 22, .3);
+    border: 1px solid var(--primary);
+    box-shadow: 0 0 10px rgba(57, 130, 247, .30);
 }
 
 .modal-container select:hover {
-    background: #333333;
+    background: var(--bg-hover);
 }
 
 .modal-container form {
@@ -104,18 +111,42 @@
     flex: 1;
     padding: 10px;
     border-radius: 10px;
-    border: none;
+    border: 1px solid var(--border);
     cursor: pointer;
     
     margin-top: 10px;
+
+    transition: .25s;
 }
 
 .modal-actions button[type="submit"] {
-    background: #f97316;
+    background: var(--primary);
     color: white;
 }
 
 .modal-actions button[type="button"] {
-    background: #2a2a2a;
+    background: var(--bg-secondary);
     color: white;
+}
+
+.modal-actions button:hover {
+    border: 1px solid var(--primary);
+    transform: translateY(-3px);
+    box-shadow: var(--shadow);
+}
+
+@keyframes modalOpen {
+    from {
+        opacity: 0;
+        transform: translateY(15px) scale(.98);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+.modal-container {
+    animation: modalOpen .25s ease;
 }

@@ -1,7 +1,7 @@
 import AppointmentCard from "../AppointmentCard/AppointmentCard";
-import "./AppointmentList.css"
+import "./AppointmentList.css";
 
-function AppointmentList({ agendamentos }) {
+function AppointmentList({ agendamentos, onEdit }) {
     
     function formatarDataAtual() {
         const data = new Date();
@@ -12,6 +12,7 @@ function AppointmentList({ agendamentos }) {
             month: "long"
         });
     }
+
 
     return (
 
@@ -28,6 +29,7 @@ function AppointmentList({ agendamentos }) {
                     <AppointmentCard
                     key={agendamento.id}
                     agendamento={agendamento}
+                    onEdit={onEdit}
                     />
                     
                 ))}

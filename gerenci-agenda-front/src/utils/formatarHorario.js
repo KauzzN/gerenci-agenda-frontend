@@ -27,3 +27,15 @@ export function formatarDataCard(data) {
         dia: dia.replace(".", "").toUpperCase()
     };
 }
+
+export function formatarHorarioInput(dataISO) {
+    const data = new Date(dataISO)
+
+    return data.toLocaleDateString("pt-BR", {
+        hour: "2-digit",
+        minute: "2-digit",
+        hour12: false,
+        timeZone: "America/Fortaleza"
+
+    })
+}
