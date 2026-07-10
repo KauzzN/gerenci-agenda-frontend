@@ -71,6 +71,8 @@ function Login() {
 
         <div className="register">
 
+          <p>Não possui uma conta?</p>
+
             <Link to={"/register"}>
               Criar Conta
             </Link>

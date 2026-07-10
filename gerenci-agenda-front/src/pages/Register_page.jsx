@@ -31,8 +31,10 @@ function Register () {
     return (
         <div className="Register-body">
             <header className="header-register">
+
                 <h2 className="h2-register-gerenci">Gerenci <span className="span-register-agenda">Agenda</span></h2>
                 <small className="slogan-register">Organize o seu dia sem esforço</small>
+                
             </header>
 
             <div className="container-register">
