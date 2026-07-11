@@ -47,9 +47,10 @@ function ModalAgendamento({
     const horariosDisponiveis = gerarHorarios();
 
 
+    
     function formatarHorarioInput(dataISO) {
         const data = new Date(dataISO)
-
+        
         return data.toLocaleTimeString("pt-BR", {
             hour: "2-digit",
             minute: "2-digit",
@@ -67,14 +68,13 @@ function ModalAgendamento({
         })
     }
     
-    
     async function handleSubmit(e) {
         e.preventDefault();
         
         if (!nome || !horario || !data) 
             return;
-        
         const horarioFinal = `${data} ${horario}:00`
+        
 
         try {
             setLoading(true);

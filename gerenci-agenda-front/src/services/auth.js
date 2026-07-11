@@ -1,4 +1,5 @@
 import api from "./api";
+import { clearTokens } from "../utils/token";
 
 export async function login(username, password) {
     const response = await api.post("usr/login", {
@@ -26,7 +27,7 @@ export async function me() {
 }
 
 export async function logout() {
-    
+    clearTokens()
 }
 
 export async function refresh() {

@@ -1,0 +1,45 @@
+.slug-input{
+
+    display:flex;
+
+    align-items:center;
+
+    border:1px solid var(--border);
+
+    border-radius:12px;
+
+    overflow:hidden;
+
+    background:var(--bg-secondary);
+
+}
+
+.slug-input span{
+
+    padding:14px;
+
+    color:var(--text-secondary);
+
+    border-right:1px solid var(--border);
+
+    white-space: nowrap;
+
+}
+
+.slug-input input{
+
+    flex:1;
+
+    background:transparent;
+
+    border:none;
+
+    outline:none;
+
+    color:white;
+
+    padding:14px;
+
+    font-size:1rem;
+
+}

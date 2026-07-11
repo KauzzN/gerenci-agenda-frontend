@@ -31,7 +31,6 @@ function AppointmentList({ agendamentos, onEdit }) {
                     agendamento={agendamento}
                     onEdit={onEdit}
                     />
-                    
                 ))}
             </div>
 

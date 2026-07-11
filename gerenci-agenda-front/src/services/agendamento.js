@@ -21,9 +21,28 @@ export async function buscarDashboard() {
     return response.data
 }
 
+export async function buscarProfile(slug) {
+    const response = await api.get(`/usr/me/profile`)
 
-export async function atualizarAgendamento() {
-    
+    return response.data
+}
+
+export async function atualizarProfile({ nome_negocio, public_slug, telefone}) {
+    const response = await api.patch("/usr/update", {
+        nome_negocio,
+        public_slug,
+        telefone
+    })
+}
+
+export async function atualizarAgendamento(id_agenda, {nome, horario, status}) {
+    const response = await api.put(`/agendar/update/${id_agenda}`, {
+        nome, 
+        horario, 
+        status
+    })
+
+    return response.data
 }
 
 export async function deletarAgendamento() {

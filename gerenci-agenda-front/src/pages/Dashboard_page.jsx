@@ -1,5 +1,6 @@
-import { useState, useEffect } from "react";
-import { listarAgendamentos } from "../services/agendamento";
+import { useState, useEffect,  } from "react";
+import { useNavigate } from "react-router-dom";
+import { buscarProfile, listarAgendamentos } from "../services/agendamento";
 import Header from "../components/Header/Header";
 import AppointmentList from "../components/AppointmentList/AppointmentList";
 import FloatingButton from "../components/FloatingButton/FloatingButton";
@@ -8,14 +9,37 @@ import ModalAgendamento from "../components/ModalAgendamento/ModalAgendamento";
 import { logout, me } from "../services/auth";
 import DashboardStats from "../components/DashboardStats/DashboardStats";
 import NextAppointment from "../components/NextAppointment/NextAppointment";
+import { Check, CopyIcon, Link } from "lucide-react";
+import toast from "react-hot-toast";
+import ModalSlug from "../components/ModalSlug/ModalSlug";
+
 
 function Dashboard () {
+
+    const navigate = useNavigate();
 
     const [agendamentos, setAgendamentos] =  useState([]);
     const [loading, setLoading] = useState(false);
     const [openModal, setOpenModal] = useState(false);
+    const [openSlugModal, setOpenSlugModal] = useState(false);
+
+    const [profile, setProfile] = useState(null);
+    
+    const link = `http://localhost:5173/book/public/${profile?.public_slug}/barbearia`
 
     const [agendamentoSelecionado, setAgendamentoSelecionado] = useState(null);
+
+    function copiarLink() {
+        navigator.clipboard.writeText(link);
+        toast.success("Link copiado")
+    }
+
+
+    async function carregarProfile() {
+        const data = await buscarProfile()
+
+        setProfile(data)
+    }
 
     async function carregarAgendamentos() {
         if (loading) return;
@@ -37,6 +61,12 @@ function Dashboard () {
 
     }
 
+    function logoff () {
+        logout()
+        navigate("/")
+        
+    }
+
     function agruparPorDia(lista) {
     return lista.reduce((acc, item) => {
         const data = new Date(item.horario);
@@ -53,6 +83,18 @@ function Dashboard () {
         setAgendamentoSelecionado(agendamento);
         setOpenModal(true)
     }
+
+    useEffect(() => {
+        async function carregarProfile() {
+        const data = await buscarProfile()
+
+        console.log(data)
+
+        setProfile(data)
+
+    }
+    carregarProfile()
+    }, []);
 
     useEffect(() => {
 
@@ -75,9 +117,42 @@ function Dashboard () {
     return (
         <div className="dashboard">
             
-            <Header onLogout={logout}/>
+            <Header onLogout={logoff}/>
 
             <div className="dashboard-divider"/>
+
+            <div className="public-link-box">
+                <div className="public-link-header">
+
+                    <Link />
+                    <small>Seu link público</small>
+
+                </div>
+
+                <div className="public-link-button">
+                    <button onClick={copiarLink}
+                    >
+                        <span>{link}</span>
+                        <CopyIcon />
+                    </button>
+
+                    <button 
+                        onClick={() => setOpenSlugModal(true)}>
+                        Editar
+                    </button>
+                </div>
+            </div>
+
+            {
+                openSlugModal && (
+                    <ModalSlug 
+                        profile={profile}
+                        onClose={() => setOpenSlugModal(false)}
+                        onUpdated={carregarProfile}
+                    />
+
+                )
+            }
 
             <DashboardStats />
 

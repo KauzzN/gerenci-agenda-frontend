@@ -1,10 +1,16 @@
 import "./Header.css"
 import { useAuth } from "../../hooks/useAuth.js";
+import { useState } from "react";
+import toast from "react-hot-toast";
 import { 
-    CalendarDays, Home, LogOut, LayoutDashboard
+    CalendarDays, Home, LogOut, LayoutDashboard,
+    Copy,
+    CopyIcon
 } from "lucide-react";
+import { useEffect } from "react";
 
 function Header ({ onLogout }) {
+
 
     const {user} = useAuth();
 
@@ -35,6 +41,7 @@ function Header ({ onLogout }) {
                 </h1>
 
                 <small>Aqui está o resumo do seu dia.</small>
+
             </div>
 
             <div className="header-second-container">
