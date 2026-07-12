@@ -1,6 +1,6 @@
 import { useState, useEffect,  } from "react";
 import { useNavigate } from "react-router-dom";
-import { buscarProfile, listarAgendamentos } from "../services/agendamento";
+import { buscarDashboard, buscarProfile, listarAgendamentos } from "../services/agendamento";
 import Header from "../components/Header/Header";
 import AppointmentList from "../components/AppointmentList/AppointmentList";
 import FloatingButton from "../components/FloatingButton/FloatingButton";
@@ -16,6 +16,7 @@ import ModalSlug from "../components/ModalSlug/ModalSlug";
 
 function Dashboard () {
 
+    // Variaveis
     const navigate = useNavigate();
 
     const [agendamentos, setAgendamentos] =  useState([]);
@@ -23,24 +24,47 @@ function Dashboard () {
     const [openModal, setOpenModal] = useState(false);
     const [openSlugModal, setOpenSlugModal] = useState(false);
 
+    const [dashboardStats, setDashboardStats] = useState(null);
+
     const [profile, setProfile] = useState(null);
     
-    const link = `http://localhost:5173/book/public/${profile?.public_slug}/barbearia`
+    const link = `http://localhost:5173/book/${profile?.public_slug}`
 
     const [agendamentoSelecionado, setAgendamentoSelecionado] = useState(null);
 
+    // Função copiar link
     function copiarLink() {
         navigator.clipboard.writeText(link);
+
         toast.success("Link copiado")
     }
 
+    // Função buscar estatisticas díaris
+    async function carregarDashboard() {
 
+        try {
+
+            const data = await buscarDashboard();
+
+            setDashboardStats(data)
+
+        } catch (err) {
+            
+            console.log(err);
+
+        }
+    }
+
+
+    // Função carregar Profile barbeiro
     async function carregarProfile() {
         const data = await buscarProfile()
 
         setProfile(data)
     }
 
+
+    // Função carregar Agendamentos barbeiro
     async function carregarAgendamentos() {
         if (loading) return;
 
@@ -48,8 +72,6 @@ function Dashboard () {
         
         try {
             const data = await listarAgendamentos();
-
-            console.log("API:", data)
 
             setAgendamentos(data.agendamentos);
 
@@ -61,12 +83,16 @@ function Dashboard () {
 
     }
 
+
+    // Função fazer logout
     function logoff () {
         logout()
         navigate("/")
         
     }
 
+
+    // Função agrupar agendamentos por dia
     function agruparPorDia(lista) {
     return lista.reduce((acc, item) => {
         const data = new Date(item.horario);
@@ -79,6 +105,7 @@ function Dashboard () {
         }, {});
     }
 
+    // Função editar agendamentos
     function handleEditar(agendamento) {
         setAgendamentoSelecionado(agendamento);
         setOpenModal(true)
@@ -98,6 +125,7 @@ function Dashboard () {
 
     useEffect(() => {
 
+        carregarDashboard()
         carregarAgendamentos();
 
         const interval = setInterval(() => {
@@ -154,7 +182,7 @@ function Dashboard () {
                 )
             }
 
-            <DashboardStats />
+            <DashboardStats stats={dashboardStats}/>
 
 
             <main className="dashboard-content">
@@ -185,7 +213,10 @@ function Dashboard () {
                         setOpenModal(false);
                         setAgendamentoSelecionado(null);
                     }}
-                    onCreated={carregarAgendamentos}
+                    onCreated={() => {
+                        carregarAgendamentos(),
+                        carregarDashboard()
+                    }}
                 />
             )}
         </div>

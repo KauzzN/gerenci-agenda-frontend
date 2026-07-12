@@ -13,5 +13,6 @@ export function getRefresh(){
 }
 
 export function clearTokens(){
-    localStorage.clear();
+    localStorage.removeItem("access_token")
+    localStorage.removeItem("refresh_token")
 }

@@ -1,5 +1,5 @@
 import axios from "axios";
-import { getAccess } from "../utils/token";
+import { clearTokens, getAccess, getRefresh, saveTokens } from "../utils/token";
 
 const api = axios.create({
     baseURL: "http://127.0.0.1:8000/api",
@@ -7,6 +7,10 @@ const api = axios.create({
         "Content-Type": "application/json"
     }
 });
+
+const refreshApi = axios.create({
+    baseURL: "http://127.0.0.1:8000/api"
+})
 
 api.interceptors.request.use((config) => {
 
@@ -18,5 +22,64 @@ api.interceptors.request.use((config) => {
 
     return config;
 });
+
+api.interceptors.response.use(
+
+    response => response,
+
+    async error => {
+        
+        const originalRequest = error.config;
+
+        if (
+            error.response?.status ===401 &&
+            !originalRequest._retry
+        ) {
+
+            originalRequest._retry = true;
+
+            const refresh = getRefresh()
+
+            if (!refresh) {
+                return Promise.reject(error);
+            }
+
+            try {
+
+                const response = await refreshApi.post(
+                    "/usr/refresh", {
+                        refresh_token: refresh
+                    }
+                );
+
+                const { access_token, refresh_token} = response.data
+
+                console.log("Novo access:", access_token)
+                console.log("Novo refresh:", refresh_token)
+
+                saveTokens(access_token, refresh_token)
+
+                console.log("Salvou access:", localStorage.getItem("access_token"))
+                console.log("Salvou refresh:", localStorage.getItem("refresh_token"))
+
+                originalRequest.headers.Authorization = `Bearer ${access_token}`
+
+                api.defaults.headers.common.Authorization = 
+                    `Bearer ${access_token}`
+
+                return api(originalRequest)
+            } catch {
+
+                clearTokens()
+
+                return Promise.reject(error);
+            }
+        }
+
+        return Promise.reject(error);
+    }
+
+
+)
 
 export default api;

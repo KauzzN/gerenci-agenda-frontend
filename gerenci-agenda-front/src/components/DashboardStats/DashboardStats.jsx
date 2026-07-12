@@ -5,33 +5,9 @@ import { useState } from "react";
 import { UsersIcon, CheckCircle, Clock4Icon, UserRoundXIcon } from "lucide-react";
 
 
-function DashboardStats () {
+function DashboardStats ({ stats }) {
     
-    const [total, setTotal] = useState(0);
-    const [pendentes, setPendentes] = useState(0);
-    const [atendidos, setAtendidos] = useState(0);
-    const [faltaram, setFaltaram] = useState(0);
-
-    useEffect(() => {
-
-        async function carregarEstatisticas() {
-            
-            try {
-                const data = await buscarDashboard();
-
-                setTotal(data.total);
-                setAtendidos(data.atendidos);
-                setPendentes(data.pendentes);
-                setFaltaram(data.faltaram);
-
-            } catch (err) {
-                console.log(err);
-            }
-
-        }
-
-        carregarEstatisticas()
-    }, []);
+    if (!stats) return null;
 
 
     return (
@@ -43,7 +19,7 @@ function DashboardStats () {
                 </div>
 
                 <div className="stat-icons">
-                    <h2>{total}</h2>
+                    <h2>{stats.total}</h2>
                     <UsersIcon 
                     className="icon-users"
                     size={24}/>
@@ -57,7 +33,7 @@ function DashboardStats () {
                 </div>
 
                 <div className="stat-icons">
-                    <h2>{atendidos}</h2>
+                    <h2>{stats.atendidos}</h2>
                     <CheckCircle 
                     className="icon-success"
                     size={24}/>
@@ -72,7 +48,7 @@ function DashboardStats () {
                 </div>
 
                 <div className="stat-icons">
-                    <h2>{pendentes}</h2>
+                    <h2>{stats.pendentes}</h2>
                     <Clock4Icon 
                     className="icon-pending"
                     size={24}/>
@@ -86,7 +62,7 @@ function DashboardStats () {
                 </div>
 
                 <div className="stat-icons">
-                    <h2>{faltaram}</h2>
+                    <h2>{stats.faltaram}</h2>
                     <UserRoundXIcon 
                     className="icon-missed"
                     size={24}/>
