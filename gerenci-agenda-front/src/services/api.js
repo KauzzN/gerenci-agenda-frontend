@@ -2,14 +2,18 @@ import axios from "axios";
 import { clearTokens, getAccess, getRefresh, saveTokens } from "../utils/token";
 
 const api = axios.create({
-    baseURL: "http://127.0.0.1:8000/api",
+    baseURL: "/api",
     headers: {
         "Content-Type": "application/json"
     }
 });
 
 const refreshApi = axios.create({
-    baseURL: "http://127.0.0.1:8000/api"
+    baseURL: "/api"
+})
+
+const publicApi = axios.create({
+    baseURL: "/api"
 })
 
 api.interceptors.request.use((config) => {
