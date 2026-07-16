@@ -28,7 +28,7 @@ function Dashboard () {
 
     const [profile, setProfile] = useState(null);
     
-    const link = `http://localhost:5173/book/${profile?.public_slug}`
+    const link = `https://gerenci-agenda-frontend-cif7.vercel.app/book/${profile?.public_slug}`
 
     const [agendamentoSelecionado, setAgendamentoSelecionado] = useState(null);
 
