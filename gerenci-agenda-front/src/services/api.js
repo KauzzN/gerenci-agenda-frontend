@@ -2,18 +2,18 @@ import axios from "axios";
 import { clearTokens, getAccess, getRefresh, saveTokens } from "../utils/token";
 
 const api = axios.create({
-    baseURL: "/api",
+    baseURL: import.meta.env.VITE_API_URL,
     headers: {
         "Content-Type": "application/json"
     }
 });
 
 const refreshApi = axios.create({
-    baseURL: "/api"
+    baseURL: import.meta.env.VITE_API_URL
 })
 
 const publicApi = axios.create({
-    baseURL: "/api"
+    baseURL: import.meta.env.VITE_API_URL
 })
 
 api.interceptors.request.use((config) => {
