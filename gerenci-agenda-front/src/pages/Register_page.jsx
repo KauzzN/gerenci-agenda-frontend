@@ -2,12 +2,13 @@ import { Link } from "react-router-dom"
 import { useState } from "react"
 import { useNavigate } from "react-router-dom"
 import { register } from "../services/auth"
-import { saveTokens } from "../utils/token"
+import { useAuth } from "../hooks/useAuth";
 import "./Register_page.css"
 
 function Register () {
 
     const navigate = useNavigate();
+    const { login: authenticate } = useAuth();
 
     const [username,setUsername] = useState("");
     const [email, setEmail] = useState("");
@@ -19,7 +20,7 @@ function Register () {
         try {
             const data = await register(username, email, password);
 
-            saveTokens(data.tokens.access_token, data.tokens.refresh_token);
+            await authenticate(data.tokens.access_token, data.tokens.refresh_token);
 
             navigate("/dashboard");
         } catch (err) {

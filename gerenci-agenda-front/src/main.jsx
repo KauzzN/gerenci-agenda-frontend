@@ -7,11 +7,14 @@ import "./styles/global.css"
 import "./index.css"
 import { Toaster } from "react-hot-toast"
 import { AuthProvider } from './contexts/AuthContext.jsx';
+import { ClientAuthProvider } from './contexts/ClientAuthContext.jsx';
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <>
     <AuthProvider>
-      <App />
+      <ClientAuthProvider>
+        <App />
+      </ClientAuthProvider>
     </AuthProvider>
 
     <Toaster position='center'/>

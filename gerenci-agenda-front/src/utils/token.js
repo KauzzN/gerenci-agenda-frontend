@@ -16,3 +16,17 @@ export function clearTokens(){
     localStorage.removeItem("access_token")
     localStorage.removeItem("refresh_token")
 }
+
+const CLIENT_ACCESS_TOKEN = "client_access_token";
+
+export function saveClientToken(token) {
+    localStorage.setItem(CLIENT_ACCESS_TOKEN, token);
+}
+
+export function getClientAccess() {
+    return localStorage.getItem(CLIENT_ACCESS_TOKEN);
+}
+
+export function clearClientToken() {
+    localStorage.removeItem(CLIENT_ACCESS_TOKEN);
+}

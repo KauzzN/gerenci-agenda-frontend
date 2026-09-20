@@ -95,7 +95,7 @@ function Dashboard () {
     // Função agrupar agendamentos por dia
     function agruparPorDia(lista) {
     return lista.reduce((acc, item) => {
-        const data = new Date(item.horario);
+        const data = new Date(item.horario_inicio);
         const chave = `${data.getDate()}/${data.getMonth() + 1}`;
 
         if (!acc[chave]) acc[chave] = [];
@@ -137,7 +137,7 @@ function Dashboard () {
     }, []);
 
     const ordenados = [...agendamentos].sort(
-        (a, b) => new Date(a.horario) - new Date(b.horario)
+        (a, b) => new Date(a.horario_inicio) - new Date(b.horario_inicio)
     );
 
     const agrupados = agruparPorDia(ordenados)

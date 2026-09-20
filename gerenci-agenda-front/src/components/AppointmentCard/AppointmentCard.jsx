@@ -3,7 +3,7 @@ import { formatarDataCard } from "../../utils/formatarHorario"
 import StatusBadge from "../StatusBadge/StatusBadge"
 
 function AppointmentCard({ agendamento, onEdit }) {
-    const dataFormatada = formatarDataCard(agendamento.horario)
+    const dataFormatada = formatarDataCard(agendamento.horario_inicio)
 
     return (
         <div 
@@ -20,10 +20,11 @@ function AppointmentCard({ agendamento, onEdit }) {
                 <div className="card-time">
                     <h2>{dataFormatada.horario}</h2>
                     <p>{dataFormatada.dia}</p>
+                    <small>até {formatarDataCard(agendamento.horario_fim).horario}</small>
                 </div>
 
                 <div className="card-name">
-                    <h3>{agendamento.nome}</h3>
+                    <h3>{agendamento.cliente}</h3>
                     <small>Cliente agendado</small>
                 </div>
             </div>

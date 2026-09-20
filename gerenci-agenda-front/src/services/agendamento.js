@@ -6,13 +6,24 @@ export async function listarAgendamentos() {
     return response.data
 }
 
-export async function criarAgendamento({ nome, horario}) {
+export async function criarAgendamento({ cliente_id, servicos, horario_inicio }) {
     const response = await api.post("/agendar/create", {
-        nome,
-        horario
+        cliente_id,
+        servicos,
+        horario_inicio
     })
 
     return response.data
+}
+
+export async function listarServicos() {
+    const response = await api.get("/serv/read");
+    return response.data?.servicos || response.data?.["serviços"] || [];
+}
+
+export async function listarClientes() {
+    const response = await api.get("/cli/read/clients");
+    return response.data?.clientes || response.data;
 }
 
 export async function buscarDashboard() {
@@ -21,7 +32,7 @@ export async function buscarDashboard() {
     return response.data
 }
 
-export async function buscarProfile(slug) {
+export async function buscarProfile() {
     const response = await api.get(`/usr/me/profile`)
 
     return response.data
@@ -33,12 +44,15 @@ export async function atualizarProfile({ nome_negocio, public_slug, telefone}) {
         public_slug,
         telefone
     })
+
+    return response.data;
 }
 
-export async function atualizarAgendamento(id_agenda, {nome, horario, status}) {
+export async function atualizarAgendamento(id_agenda, { cliente_id, servicos, horario_inicio, status }) {
     const response = await api.put(`/agendar/update/${id_agenda}`, {
-        nome, 
-        horario, 
+        cliente_id,
+        servicos,
+        horario_inicio,
         status
     })
 

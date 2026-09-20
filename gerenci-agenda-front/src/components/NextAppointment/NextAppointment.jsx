@@ -57,7 +57,7 @@ function NextAppointment () {
                     {
                         proximo ? (
                             <>
-                                <h2>{proximo.nome}</h2>
+                                <h2>{proximo.cliente}</h2>
                             </>
                         ) : (
                             <p>Bom trabalho por hoje! 🎉</p>
@@ -72,7 +72,7 @@ function NextAppointment () {
                     proximo ? (
                         <>
                         <ClockIcon />
-                            <p> Horario: {formatarHorario(proximo.horario)}</p>
+                            <p> Horario: {formatarHorario(proximo.horario_inicio)}</p>
                         </>
                     ) : (
                         <p></p>

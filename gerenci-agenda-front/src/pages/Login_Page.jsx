@@ -2,12 +2,13 @@ import { Link } from "react-router-dom"
 import { useState } from "react"
 import { useNavigate } from "react-router-dom"
 import { login } from "../services/auth"
-import { saveTokens } from "../utils/token"
+import { useAuth } from "../hooks/useAuth";
 import './Login_Page.css'
 
 function Login() {
 
   const navigate = useNavigate();
+  const { login: authenticate } = useAuth();
 
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -18,7 +19,7 @@ function Login() {
     try {
       const data = await login(username, password);
 
-      saveTokens(data.tokens.access_token, data.tokens.refresh_token);
+      await authenticate(data.tokens.access_token, data.tokens.refresh_token);
 
       navigate("/dashboard");
     } catch (err) {
