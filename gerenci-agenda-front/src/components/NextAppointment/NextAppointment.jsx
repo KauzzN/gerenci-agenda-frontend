@@ -1,5 +1,4 @@
-import { useEffect, useState } from "react"
-import { buscarDashboard } from "../../services/agendamento";
+import { useEffect, useState } from "react";
 import { formatarHorario } from "../../utils/formatarHorario";
 import { ClockIcon, User2Icon } from "lucide-react";
 
@@ -7,34 +6,14 @@ import "./NextAppointment.css"
 
 
 
-function NextAppointment () {
+function NextAppointment ({ stats }) {
 
     const [proximo, setProximo] = useState();
 
-    async function carregarEstatisticas() {
-            
-            try {
-                const data = await buscarDashboard();
-
-                if (data.proximo) {
-                    setProximo(data.proximo)
-                }
-
-            } catch (err) {
-                console.log(err);
-            }
-        }
-
     useEffect(() => {
-        carregarEstatisticas()
+        setProximo(stats?.proximo || null);
 
-        const interval = setInterval(() => {
-            carregarEstatisticas()
-        }, 10000)
-
-        return () => clearInterval(interval)
-
-    }, []);
+    }, [stats]);
 
     return (
         <div className="next-container">

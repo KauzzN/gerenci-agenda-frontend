@@ -102,6 +102,8 @@ api.interceptors.response.use(
             const refresh = getRefresh()
 
             if (!refresh) {
+                clearTokens()
+                window.dispatchEvent(new Event("auth:expired"));
                 return Promise.reject(error);
             }
 
@@ -126,6 +128,7 @@ api.interceptors.response.use(
             } catch {
 
                 clearTokens()
+                window.dispatchEvent(new Event("auth:expired"));
 
                 return Promise.reject(error);
             }

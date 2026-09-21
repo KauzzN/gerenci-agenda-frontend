@@ -54,6 +54,15 @@ export function AuthProvider({ children }) {
 
   }, [accessToken]);
 
+  useEffect(() => {
+    function handleExpiredSession() {
+      logout();
+    }
+
+    window.addEventListener("auth:expired", handleExpiredSession);
+    return () => window.removeEventListener("auth:expired", handleExpiredSession);
+  }, []);
+
   return (
     <AuthContext.Provider
       value={{

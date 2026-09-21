@@ -2,8 +2,10 @@ import api from "./api";
 
 export async function listarAgendamentos() {
     const response = await api.get("/agendar/read",);
+    const data = response.data;
 
-    return response.data
+    if (Array.isArray(data)) return data;
+    return data?.agendamentos || data?.data?.agendamentos || [];
 }
 
 export async function criarAgendamento({ cliente_id, servicos, horario_inicio }) {
@@ -29,7 +31,7 @@ export async function listarClientes() {
 export async function buscarDashboard() {
     const response = await api.get("/agendar/dashboard")
 
-    return response.data
+    return response.data?.dashboard || response.data;
 }
 
 export async function buscarProfile() {

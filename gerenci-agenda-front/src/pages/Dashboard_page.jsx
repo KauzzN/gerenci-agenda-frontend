@@ -1,4 +1,4 @@
-import { useState, useEffect,  } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { buscarDashboard, buscarProfile, listarAgendamentos } from "../services/agendamento";
 import Header from "../components/Header/Header";
@@ -6,10 +6,10 @@ import AppointmentList from "../components/AppointmentList/AppointmentList";
 import FloatingButton from "../components/FloatingButton/FloatingButton";
 import "./Dashboard_page.css"
 import ModalAgendamento from "../components/ModalAgendamento/ModalAgendamento";
-import { logout, me } from "../services/auth";
+import { logout } from "../services/auth";
 import DashboardStats from "../components/DashboardStats/DashboardStats";
 import NextAppointment from "../components/NextAppointment/NextAppointment";
-import { Check, CopyIcon, Link } from "lucide-react";
+import { CopyIcon, Link } from "lucide-react";
 import toast from "react-hot-toast";
 import ModalSlug from "../components/ModalSlug/ModalSlug";
 
@@ -27,8 +27,11 @@ function Dashboard () {
     const [dashboardStats, setDashboardStats] = useState(null);
 
     const [profile, setProfile] = useState(null);
+    const [dashboardError, setDashboardError] = useState(false);
     
-    const link = `https://gerenci-agenda-frontend-cif7.vercel.app/book/${profile?.public_slug}`
+    const link = profile?.public_slug
+        ? `https://gerenci-agenda-frontend-cif7.vercel.app/book/${profile.public_slug}`
+        : "";
 
     const [agendamentoSelecionado, setAgendamentoSelecionado] = useState(null);
 
@@ -49,7 +52,7 @@ function Dashboard () {
             setDashboardStats(data)
 
         } catch (err) {
-            
+            setDashboardError(true);
             console.log(err);
 
         }
@@ -58,9 +61,13 @@ function Dashboard () {
 
     // Função carregar Profile barbeiro
     async function carregarProfile() {
-        const data = await buscarProfile()
-
-        setProfile(data)
+        try {
+            const data = await buscarProfile();
+            setProfile(data);
+        } catch (err) {
+            setDashboardError(true);
+            console.log(err);
+        }
     }
 
 
@@ -73,9 +80,10 @@ function Dashboard () {
         try {
             const data = await listarAgendamentos();
 
-            setAgendamentos(data.agendamentos);
+            setAgendamentos(Array.isArray(data) ? data : []);
 
         } catch (err) {
+            setDashboardError(true);
             console.log(err)
         } finally {
             setLoading(false);
@@ -93,18 +101,6 @@ function Dashboard () {
 
 
     // Função agrupar agendamentos por dia
-    function agruparPorDia(lista) {
-    return lista.reduce((acc, item) => {
-        const data = new Date(item.horario_inicio);
-        const chave = `${data.getDate()}/${data.getMonth() + 1}`;
-
-        if (!acc[chave]) acc[chave] = [];
-        acc[chave].push(item);
-
-        return acc;
-        }, {});
-    }
-
     // Função editar agendamentos
     function handleEditar(agendamento) {
         setAgendamentoSelecionado(agendamento);
@@ -112,15 +108,7 @@ function Dashboard () {
     }
 
     useEffect(() => {
-        async function carregarProfile() {
-        const data = await buscarProfile()
-
-        console.log(data)
-
-        setProfile(data)
-
-    }
-    carregarProfile()
+        carregarProfile()
     }, []);
 
     useEffect(() => {
@@ -136,11 +124,19 @@ function Dashboard () {
         
     }, []);
 
-    const ordenados = [...agendamentos].sort(
+    const agendamentosHoje = useMemo(() => {
+        const hoje = new Date();
+        return agendamentos.filter((agendamento) => {
+            const data = new Date(agendamento.horario_inicio);
+            return data.getFullYear() === hoje.getFullYear()
+                && data.getMonth() === hoje.getMonth()
+                && data.getDate() === hoje.getDate();
+        });
+    }, [agendamentos]);
+
+    const ordenados = [...agendamentosHoje].sort(
         (a, b) => new Date(a.horario_inicio) - new Date(b.horario_inicio)
     );
-
-    const agrupados = agruparPorDia(ordenados)
 
     return (
         <div className="dashboard">
@@ -160,7 +156,7 @@ function Dashboard () {
                 <div className="public-link-button">
                     <button onClick={copiarLink}
                     >
-                        <span>{link}</span>
+                        <span>{link || "Configure seu link público"}</span>
                         <CopyIcon />
                     </button>
 
@@ -182,6 +178,10 @@ function Dashboard () {
                 )
             }
 
+            {dashboardError && (
+                <p role="alert">Não foi possível carregar os dados do dashboard.</p>
+            )}
+
             <DashboardStats stats={dashboardStats}/>
 
 
@@ -189,14 +189,14 @@ function Dashboard () {
 
                 <div className="dashboard-main">
                     <AppointmentList 
-                        agendamentos={agendamentos} 
+                        agendamentos={ordenados}
                         onEdit={handleEditar}
                         />
                     
                 </div>
                 
                 <aside className="dashboard-side">
-                    <NextAppointment />
+                    <NextAppointment stats={dashboardStats} />
                 </aside>
 
             </main>
