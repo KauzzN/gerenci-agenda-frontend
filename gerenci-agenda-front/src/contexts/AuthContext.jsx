@@ -12,6 +12,10 @@ export function AuthProvider({ children }) {
 
   const [user, setUser] = useState(null);
 
+  // Enquanto existir um token salvo, a sessão precisa ser validada em
+  // "/usr/me" antes de liberar as rotas privadas.
+  const [authChecking, setAuthChecking] = useState(() => !!localStorage.getItem("access_token"));
+
   const isAuthenticated = !!accessToken
 
   async function login(access_token, refresh_token) {
@@ -19,6 +23,7 @@ export function AuthProvider({ children }) {
     saveTokens(access_token, refresh_token)
 
     setAccessToken(access_token)
+    setAuthChecking(false)
   }
 
   function logout() {
@@ -28,19 +33,26 @@ export function AuthProvider({ children }) {
     setAccessToken(null);
     
     setUser(null);
+    setAuthChecking(false);
   }
 
   useEffect(() => {
 
     async function carregarUsuario() {
 
-        if (!accessToken) return;
+        if (!accessToken) {
+            setAuthChecking(false);
+            return;
+        }
+
+        setAuthChecking(true);
 
         try {
 
             const usuario = await me();
 
             setUser(usuario);
+            setAuthChecking(false);
 
         } catch {
 
@@ -68,6 +80,7 @@ export function AuthProvider({ children }) {
       value={{
         accessToken,
         isAuthenticated,
+        authChecking,
         user,
         login,
         logout

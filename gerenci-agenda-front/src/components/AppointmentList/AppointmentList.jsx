@@ -1,7 +1,7 @@
 import AppointmentCard from "../AppointmentCard/AppointmentCard";
 import "./AppointmentList.css";
 
-function AppointmentList({ agendamentos, onEdit }) {
+function AppointmentList({ agendamentos = [], onEdit, loading = false }) {
     
     function formatarDataAtual() {
         const data = new Date();
@@ -24,7 +24,13 @@ function AppointmentList({ agendamentos, onEdit }) {
             </div>
 
             <div className="appointment-card-box">
-                {agendamentos.map((agendamento) => (
+                {loading && <p>Carregando agendamentos...</p>}
+
+                {!loading && agendamentos.length === 0 && (
+                    <p>Nenhum agendamento para hoje.</p>
+                )}
+
+                {!loading && agendamentos.map((agendamento) => (
                     
                     <AppointmentCard
                     key={agendamento.id}

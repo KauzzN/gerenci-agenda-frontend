@@ -5,7 +5,11 @@ import { AuthContext } from "../contexts/AuthContext";
 
 function PrivateRoute ({children}) {
 
-    const { isAuthenticated } = useContext(AuthContext)
+    const { isAuthenticated, authChecking } = useContext(AuthContext)
+
+    if (authChecking) {
+        return <p>Verificando sessão...</p>
+    }
 
     if (!isAuthenticated) {
         return <Navigate to="/" replace/>

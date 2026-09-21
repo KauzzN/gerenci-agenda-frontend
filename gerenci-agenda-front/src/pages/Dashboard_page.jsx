@@ -27,7 +27,13 @@ function Dashboard () {
     const [dashboardStats, setDashboardStats] = useState(null);
 
     const [profile, setProfile] = useState(null);
-    const [dashboardError, setDashboardError] = useState(false);
+    const [profileChecked, setProfileChecked] = useState(false);
+    // Cada origem mantém seu próprio estado de erro para que o sucesso de
+    // uma chamada não esconda a falha de outra chamada concorrente.
+    const [statsErrorType, setStatsErrorType] = useState(null);
+    const [agendamentosErrorType, setAgendamentosErrorType] = useState(null);
+    const [profileErrorType, setProfileErrorType] = useState(null);
+    const [initialLoading, setInitialLoading] = useState(true);
     
     const link = profile?.public_slug
         ? `https://gerenci-agenda-frontend-cif7.vercel.app/book/${profile.public_slug}`
@@ -50,9 +56,10 @@ function Dashboard () {
             const data = await buscarDashboard();
 
             setDashboardStats(data)
+            setStatsErrorType(null);
 
         } catch (err) {
-            setDashboardError(true);
+            setStatsErrorType(err.response ? "api" : "network");
             console.log(err);
 
         }
@@ -64,9 +71,19 @@ function Dashboard () {
         try {
             const data = await buscarProfile();
             setProfile(data);
+            setProfileErrorType(null);
         } catch (err) {
-            setDashboardError(true);
+            // 404 significa apenas que o profissional ainda não configurou
+            // o perfil/slug público, não é uma falha de carregamento.
+            if (err.response?.status !== 404) {
+                setProfileErrorType(err.response ? "api" : "network");
+            } else {
+                setProfileErrorType(null);
+            }
+            setProfile(null);
             console.log(err);
+        } finally {
+            setProfileChecked(true);
         }
     }
 
@@ -81,9 +98,10 @@ function Dashboard () {
             const data = await listarAgendamentos();
 
             setAgendamentos(Array.isArray(data) ? data : []);
+            setAgendamentosErrorType(null);
 
         } catch (err) {
-            setDashboardError(true);
+            setAgendamentosErrorType(err.response ? "api" : "network");
             console.log(err)
         } finally {
             setLoading(false);
@@ -108,13 +126,17 @@ function Dashboard () {
     }
 
     useEffect(() => {
-        carregarProfile()
-    }, []);
 
-    useEffect(() => {
+        async function carregarTudo() {
+            await Promise.allSettled([
+                carregarProfile(),
+                carregarDashboard(),
+                carregarAgendamentos()
+            ]);
+            setInitialLoading(false);
+        }
 
-        carregarDashboard()
-        carregarAgendamentos();
+        carregarTudo();
 
         const interval = setInterval(() => {
             carregarAgendamentos();
@@ -138,6 +160,15 @@ function Dashboard () {
         (a, b) => new Date(a.horario_inicio) - new Date(b.horario_inicio)
     );
 
+    const linkLabel = !profileChecked
+        ? "Carregando link..."
+        : (link || "Configure seu link público");
+
+    const errosAtivos = [statsErrorType, agendamentosErrorType, profileErrorType].filter(Boolean);
+    const dashboardErrorType = errosAtivos.includes("network")
+        ? "network"
+        : (errosAtivos.includes("api") ? "api" : null);
+
     return (
         <div className="dashboard">
             
@@ -156,7 +187,7 @@ function Dashboard () {
                 <div className="public-link-button">
                     <button onClick={copiarLink}
                     >
-                        <span>{link || "Configure seu link público"}</span>
+                        <span>{linkLabel}</span>
                         <CopyIcon />
                     </button>
 
@@ -178,7 +209,15 @@ function Dashboard () {
                 )
             }
 
-            {dashboardError && (
+            {initialLoading && (
+                <p>Carregando dashboard...</p>
+            )}
+
+            {!initialLoading && dashboardErrorType === "network" && (
+                <p role="alert">Não foi possível conectar à API. Verifique sua conexão e tente novamente.</p>
+            )}
+
+            {!initialLoading && dashboardErrorType === "api" && (
                 <p role="alert">Não foi possível carregar os dados do dashboard.</p>
             )}
 
@@ -191,6 +230,7 @@ function Dashboard () {
                     <AppointmentList 
                         agendamentos={ordenados}
                         onEdit={handleEditar}
+                        loading={initialLoading}
                         />
                     
                 </div>

@@ -19,7 +19,7 @@ function DashboardStats ({ stats }) {
                 </div>
 
                 <div className="stat-icons">
-                    <h2>{stats.total}</h2>
+                    <h2>{stats.total ?? 0}</h2>
                     <UsersIcon 
                     className="icon-users"
                     size={24}/>
@@ -33,7 +33,7 @@ function DashboardStats ({ stats }) {
                 </div>
 
                 <div className="stat-icons">
-                    <h2>{stats.atendidos}</h2>
+                    <h2>{stats.atendidos ?? 0}</h2>
                     <CheckCircle 
                     className="icon-success"
                     size={24}/>
@@ -48,7 +48,7 @@ function DashboardStats ({ stats }) {
                 </div>
 
                 <div className="stat-icons">
-                    <h2>{stats.pendentes}</h2>
+                    <h2>{stats.pendentes ?? 0}</h2>
                     <Clock4Icon 
                     className="icon-pending"
                     size={24}/>
@@ -62,7 +62,7 @@ function DashboardStats ({ stats }) {
                 </div>
 
                 <div className="stat-icons">
-                    <h2>{stats.faltaram}</h2>
+                    <h2>{stats.faltaram ?? 0}</h2>
                     <UserRoundXIcon 
                     className="icon-missed"
                     size={24}/>

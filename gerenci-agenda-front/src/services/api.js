@@ -31,11 +31,18 @@ const clientApi = axios.create({
         "Content-Type": "application/json"
     }
 });
+
+// Evita disparar múltiplas requisições simultâneas de refresh quando
+// vários pedidos falham com 401 ao mesmo tempo.
+let professionalRefreshPromise = null;
+
 clientApi.interceptors.request.use((config) => {
     const token = getClientAccess();
     if (token) config.headers.Authorization = "Bearer " + token;
     return config;
 });
+
+let clientRefreshPromise = null;
 
 clientApi.interceptors.response.use(
     response => response,
@@ -55,9 +62,15 @@ clientApi.interceptors.response.use(
         }
 
         try {
-            const response = await refreshApi.post("/usr/refresh", {
-                refresh_token: refresh
-            });
+            if (!clientRefreshPromise) {
+                clientRefreshPromise = refreshApi.post("/usr/refresh", {
+                    refresh_token: refresh
+                }).finally(() => {
+                    clientRefreshPromise = null;
+                });
+            }
+
+            const response = await clientRefreshPromise;
             const { access_token, refresh_token } = response.data;
 
             saveClientTokens(access_token, refresh_token);
@@ -109,11 +122,17 @@ api.interceptors.response.use(
 
             try {
 
-                const response = await refreshApi.post(
-                    "/usr/refresh", {
-                        refresh_token: refresh
-                    }
-                );
+                if (!professionalRefreshPromise) {
+                    professionalRefreshPromise = refreshApi.post(
+                        "/usr/refresh", {
+                            refresh_token: refresh
+                        }
+                    ).finally(() => {
+                        professionalRefreshPromise = null;
+                    });
+                }
+
+                const response = await professionalRefreshPromise;
 
                 const { access_token, refresh_token} = response.data
 
