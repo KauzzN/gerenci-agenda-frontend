@@ -18,15 +18,22 @@ export function clearTokens(){
 }
 
 const CLIENT_ACCESS_TOKEN = "client_access_token";
+const CLIENT_REFRESH_TOKEN = "client_refresh_token";
 
-export function saveClientToken(token) {
-    localStorage.setItem(CLIENT_ACCESS_TOKEN, token);
+export function saveClientTokens(access_token, refresh_token) {
+    localStorage.setItem(CLIENT_ACCESS_TOKEN, access_token);
+    localStorage.setItem(CLIENT_REFRESH_TOKEN, refresh_token);
 }
 
 export function getClientAccess() {
     return localStorage.getItem(CLIENT_ACCESS_TOKEN);
 }
 
-export function clearClientToken() {
+export function getClientRefresh() {
+    return localStorage.getItem(CLIENT_REFRESH_TOKEN);
+}
+
+export function clearClientTokens() {
     localStorage.removeItem(CLIENT_ACCESS_TOKEN);
+    localStorage.removeItem(CLIENT_REFRESH_TOKEN);
 }

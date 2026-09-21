@@ -1,5 +1,14 @@
 import axios from "axios";
-import { clearTokens, getAccess, getRefresh, saveTokens, getClientAccess } from "../utils/token";
+import {
+    clearTokens,
+    getAccess,
+    getRefresh,
+    saveTokens,
+    getClientAccess,
+    getClientRefresh,
+    saveClientTokens,
+    clearClientTokens
+} from "../utils/token";
 
 const api = axios.create({
     baseURL: import.meta.env.VITE_API_URL,
@@ -24,9 +33,43 @@ const clientApi = axios.create({
 });
 clientApi.interceptors.request.use((config) => {
     const token = getClientAccess();
-    if (token) config.headers.Authorization = `Bearer ${token}`;
+    if (token) config.headers.Authorization = "Bearer " + token;
     return config;
 });
+
+clientApi.interceptors.response.use(
+    response => response,
+    async error => {
+        const originalRequest = error.config;
+
+        if (error.response?.status !== 401 || originalRequest?._retry) {
+            return Promise.reject(error);
+        }
+
+        originalRequest._retry = true;
+        const refresh = getClientRefresh();
+
+        if (!refresh) {
+            clearClientTokens();
+            return Promise.reject(error);
+        }
+
+        try {
+            const response = await refreshApi.post("/usr/refresh", {
+                refresh_token: refresh
+            });
+            const { access_token, refresh_token } = response.data;
+
+            saveClientTokens(access_token, refresh_token);
+            originalRequest.headers.Authorization = "Bearer " + access_token;
+
+            return clientApi(originalRequest);
+        } catch (refreshError) {
+            clearClientTokens();
+            return Promise.reject(refreshError);
+        }
+    }
+);
 
 export { publicApi, clientApi };
 
@@ -35,7 +78,7 @@ api.interceptors.request.use((config) => {
     const token = getAccess();
 
     if (token) {
-        config.headers.Authorization = `Bearer ${token}`
+        config.headers.Authorization = "Bearer " + token;
     }
 
     return config;
@@ -74,10 +117,10 @@ api.interceptors.response.use(
 
                 saveTokens(access_token, refresh_token)
 
-                originalRequest.headers.Authorization = `Bearer ${access_token}`
+                originalRequest.headers.Authorization = "Bearer " + access_token;
 
-                api.defaults.headers.common.Authorization = 
-                    `Bearer ${access_token}`
+                api.defaults.headers.common.Authorization = "Bearer " + access_token;
+
 
                 return api(originalRequest)
             } catch {

@@ -1,5 +1,5 @@
 import { createContext, useContext, useState } from "react";
-import { clearClientToken, getClientAccess } from "../utils/token";
+import { clearClientTokens, getClientAccess } from "../utils/token";
 
 export const ClientAuthContext = createContext(null);
 
@@ -11,7 +11,7 @@ export function ClientAuthProvider({ children }) {
     }
 
     function logoutClient() {
-        clearClientToken();
+        clearClientTokens();
         setClientToken(null);
     }
 

@@ -1,11 +1,12 @@
 import { publicApi, clientApi } from "./api";
-import { saveClientToken } from "../utils/token";
+import { saveClientTokens } from "../utils/token";
 
 export async function autenticarCliente(slug, nome, telefone) {
     const response = await publicApi.post(`/cli/teste/${slug}`, { nome, telefone });
-    const token = response.data?.access_token || response.data?.token ||
-        response.data?.tokens?.access_token;
-    if (token) saveClientToken(token);
+    const tokens = response.data?.tokens;
+    if (tokens?.access_token && tokens?.refresh_token) {
+        saveClientTokens(tokens.access_token, tokens.refresh_token);
+    }
     return response.data;
 }
 
