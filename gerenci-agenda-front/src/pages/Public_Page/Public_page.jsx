@@ -243,7 +243,16 @@ function PublicPage() {
                             <Calendar size={18}/> Escolha a data
                         </label>
 
-                        <input type="date" value={data} onChange={(e)=>setData(e.target.value)} />
+                        <input
+                            type="date"
+                            value={data}
+                            onChange={async (e) => {
+                                setData(e.target.value);
+                                if (!isClientAuthenticated && nome.trim() && telefone.trim()) {
+                                    await autenticar();
+                                }
+                            }}
+                        />
 
                         <h3> <Clock3 size={18}/> Horários disponíveis</h3>
 
