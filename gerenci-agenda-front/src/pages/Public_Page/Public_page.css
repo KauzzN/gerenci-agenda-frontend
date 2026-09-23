@@ -1,5 +1,5 @@
 .public-page {
-    min-height: 100vh;
+    min-height: 100dvh;
     background: var(--bg-primary);
     display: flex;
     justify-content: center;
@@ -331,5 +331,21 @@
     .time-button{
 
         padding:13px;
+    }
+
+    .public-card h1 {
+        font-size: 1.55rem;
+        overflow-wrap: anywhere;
+    }
+
+    .summary-item {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 4px;
+    }
+
+    .schedule-button,
+    .time-button {
+        min-height: 48px;
     }
 }

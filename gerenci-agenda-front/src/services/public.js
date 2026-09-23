@@ -11,9 +11,7 @@ export async function autenticarCliente(slug, nome, telefone) {
 }
 
 export async function buscarProfilePublic(slug) {
-    const response = await clientApi.get(
-        `public/${slug}/barbearia`
-    )
+    const response = await publicApi.get(`/public/${slug}/barbearia`);
 
     return response.data;
 }

@@ -1,4 +1,4 @@
-import "./ DashboardStats.css"
+import "./DashboardStats.css"
 import { useEffect } from "react";
 import { buscarDashboard } from "../../services/agendamento"
 import { useState } from "react";

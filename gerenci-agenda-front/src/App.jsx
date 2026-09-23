@@ -5,6 +5,10 @@ import Dashboard from './pages/Dashboard_page.jsx';
 import PrivateRoute from './routes/PrivateRoute.jsx'
 import './App.css'
 import PublicPage from './pages/Public_Page/Public_page.jsx';
+import SettingsPage from "./pages/SettingsPage.jsx";
+import ServicesPage from "./pages/ServicesPage.jsx";
+import ClientsPage from "./pages/ClientsPage.jsx";
+import HistoryPage from "./pages/HistoryPage.jsx";
 
 function App() {
   return (
@@ -18,6 +22,10 @@ function App() {
           </PrivateRoute>
         } />
         <Route path='/book/:slug'  element={<PublicPage />}/>
+        <Route path="/configuracoes" element={<PrivateRoute><SettingsPage /></PrivateRoute>} />
+        <Route path="/servicos" element={<PrivateRoute><ServicesPage /></PrivateRoute>} />
+        <Route path="/clientes" element={<PrivateRoute><ClientsPage /></PrivateRoute>} />
+        <Route path="/historico" element={<PrivateRoute><HistoryPage /></PrivateRoute>} />
       </Routes>
     </BrowserRouter>
   )

@@ -52,6 +52,23 @@
     gap: 4px;
 }
 
+@media (max-width: 600px) {
+    .next-container {
+        margin: 0;
+        padding: 16px;
+    }
+
+    .next-container h2 {
+        font-size: 1.35rem;
+        overflow-wrap: anywhere;
+    }
+
+    .next-info-horario {
+        max-width: 100%;
+        padding: 10px;
+    }
+}
+
 .next-header {
     display: flex;
     align-items: center;

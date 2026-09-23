@@ -34,3 +34,18 @@
     gap: 10px;
 }
 
+.appointment-list-header input {
+    min-height: 44px;
+    max-width: 240px;
+}
+
+@media (max-width: 600px) {
+    .appointment-list {
+        padding: 16px;
+    }
+
+    .appointment-list-header input {
+        max-width: none;
+        width: 100%;
+    }
+}

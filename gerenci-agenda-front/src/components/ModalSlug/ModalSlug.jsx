@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { atualizarProfile } from "../../services/agendamento";
+import toast from "react-hot-toast";
 
 function ModalSlug({ profile, onClose, onUpdated}) {
 
@@ -13,18 +14,31 @@ function ModalSlug({ profile, onClose, onUpdated}) {
         try {
             setLoading(true)
 
-            await atualizarProfile({
+            const response = await atualizarProfile({
 
                 public_slug: slug
 
             })
 
-            onUpdated();
+            onUpdated(response.profile);
 
             onClose();
         } catch (err) {
 
-            console.log(err)
+            const status = err.response?.status;
+            const message = err.response?.data?.error;
+
+            if (status === 400) {
+                toast.error(message || "Informe um link público válido.");
+            } else if (status === 401) {
+                toast.error("Sua sessão expirou. Entre novamente para continuar.");
+            } else if (status === 409) {
+                toast.error(message || "Este link público já está em uso.");
+            } else if (!err.response) {
+                toast.error("Não foi possível conectar à API. Tente novamente.");
+            } else {
+                toast.error(message || "Não foi possível atualizar o link público.");
+            }
 
         } finally {
 
@@ -35,7 +49,7 @@ function ModalSlug({ profile, onClose, onUpdated}) {
 
     useEffect(() => {
         if (profile) {
-            setSlug(profile.public_slug)
+            setSlug(profile.public_slug || "")
         }
     }, [profile]);
 

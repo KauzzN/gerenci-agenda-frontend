@@ -119,6 +119,16 @@
 }
 
 @media (max-width: 480px) {
+    .stats-container {
+        gap: 10px;
+        padding: 8px 16px;
+    }
+
+    .stat-card {
+        min-height: 122px;
+        padding: 12px;
+    }
+
     .stat-card h2 {
         font-size: 1.8rem;
     }

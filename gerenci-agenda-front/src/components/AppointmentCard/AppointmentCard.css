@@ -71,6 +71,7 @@
     display: flex;
     flex-direction: column;
     justify-content: center;
+    min-width: 0;
 }
 
 .card-name h3 {
@@ -93,3 +94,45 @@
     color: var(--pending);
 }
 
+.cancel-appointment-button {
+    align-self: flex-end;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: transparent;
+    color: var(--text-secondary);
+    cursor: pointer;
+    padding: 7px 10px;
+}
+
+.cancel-appointment-button:disabled {
+    cursor: wait;
+    opacity: .65;
+}
+
+@media (max-width: 600px) {
+    .card-container {
+        align-items: stretch;
+        flex-wrap: wrap;
+        padding: 14px;
+    }
+
+    .card-box {
+        gap: 12px;
+        min-width: 0;
+        width: 100%;
+    }
+
+    .card-time {
+        height: 64px;
+        width: 64px;
+    }
+
+    .card-name h3 {
+        overflow-wrap: anywhere;
+    }
+
+    .cancel-appointment-button {
+        min-height: 44px;
+        width: 100%;
+    }
+}

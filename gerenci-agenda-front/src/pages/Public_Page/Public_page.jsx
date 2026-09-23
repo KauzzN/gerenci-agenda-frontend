@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
 
 import "./Public_page.css";
@@ -17,7 +17,7 @@ function PublicPage() {
 
     const { slug } = useParams();
 
-    const hoje = new Date().toISOString().slice(0,10);
+    const hoje = new Date().toLocaleDateString("en-CA");
 
     const [data, setData] = useState(hoje);
     const [profile, setProfile] = useState(null);
@@ -34,18 +34,41 @@ function PublicPage() {
 
     const [loading, setLoading] = useState(false);
     const [authLoading, setAuthLoading] = useState(false);
+    const [profileLoading, setProfileLoading] = useState(true);
+    const [profileError, setProfileError] = useState(null);
+    const [availabilityError, setAvailabilityError] = useState(null);
+    const [availabilityLoading, setAvailabilityLoading] = useState(false);
+    const [bookingCompleted, setBookingCompleted] = useState(false);
+    const bookingRef = useRef(false);
+    const availabilityRequestRef = useRef(0);
 
     const carregarHorarios = useCallback(async () => {
+        const requestId = availabilityRequestRef.current + 1;
+        availabilityRequestRef.current = requestId;
+
         if (!isClientAuthenticated || servicosSelecionados.length === 0) {
             setHorarios([]);
+            setAvailabilityError(null);
+            setAvailabilityLoading(false);
             return;
         }
 
         try {
+            setAvailabilityLoading(true);
             const response = await buscarHorarios(slug, data, servicosSelecionados);
-            setHorarios(response.horarios || response);
+            if (requestId === availabilityRequestRef.current) {
+                setHorarios(response.horarios || []);
+                setAvailabilityError(null);
+            }
         } catch (error) {
-            console.log(error);
+            if (requestId === availabilityRequestRef.current) {
+                setHorarios([]);
+                setAvailabilityError(error.response?.data?.error || "Não foi possível carregar horários.");
+            }
+        } finally {
+            if (requestId === availabilityRequestRef.current) {
+                setAvailabilityLoading(false);
+            }
         }
     }, [data, isClientAuthenticated, servicosSelecionados, slug]);
 
@@ -71,13 +94,13 @@ function PublicPage() {
     }
 
     async function handleAgendar(){
-        if (!isClientAuthenticated) {
-            await autenticar();
+        if (servicosSelecionados.length === 0) {
+            toast.error("Selecione ao menos um serviço.");
             return;
         }
 
-        if (servicosSelecionados.length === 0) {
-            toast.error("Selecione ao menos um serviço.");
+        if (!isClientAuthenticated) {
+            await autenticar();
             return;
         }
 
@@ -86,9 +109,11 @@ function PublicPage() {
             return;
         }
 
+        if (bookingRef.current) return;
 
         try{
 
+            bookingRef.current = true;
             setLoading(true);
             await criarAgendamentoPublic(
                 slug,
@@ -96,47 +121,58 @@ function PublicPage() {
                   horario_inicio: `${data}T${horarioSelecionado}:00` }
             );
 
-            toast.success("Horário agendado")
-
-            setNome("");
-            setTelefone("");
-
+            toast.success("Horário agendado.");
             setHorarioSelecionado("");
+            setBookingCompleted(true);
 
             await carregarHorarios();
 
         }catch(err){
+            const status = err.response?.status;
+            const message = err.response?.data?.error;
 
-            console.log(err.response?.data || err);
+            if (status === 401) {
+                toast.error("Sua sessão expirou. Informe seus dados novamente.");
+            } else if (status === 409) {
+                toast.error("Este horário acabou de ser reservado. Escolha outro.");
+                setHorarioSelecionado("");
+                await carregarHorarios();
+            } else if (!err.response) {
+                toast.error("Não foi possível conectar à API. Tente novamente.");
+            } else {
+                toast.error(message || "Não foi possível concluir o agendamento.");
+            }
 
         }finally{
 
+            bookingRef.current = false;
             setLoading(false);
 
         }
 
     }
 
-    useEffect(()=>{
-
-        if (!isClientAuthenticated) {
-            setProfile(null);
-            setServicos([]);
-            return;
-        }
-
+    useEffect(() => {
         async function carregarProfile() {
             try {
+                setProfileLoading(true);
+                setProfileError(null);
                 const response = await buscarProfilePublic(slug);
                 setProfile(response);
-                setServicos(response.servicos || response.services || []);
+                setServicos(response.servicos || []);
             } catch (error) {
-                toast.error(error.response?.data?.error || "Não foi possível carregar a barbearia.");
+                setProfile(null);
+                setServicos([]);
+                setProfileError(error.response?.status === 404
+                    ? "Este negócio não foi encontrado."
+                    : "Não foi possível carregar esta página.");
+            } finally {
+                setProfileLoading(false);
             }
         }
 
         carregarProfile();
-    }, [slug, isClientAuthenticated]);
+    }, [slug]);
 
     useEffect(()=>{
 
@@ -144,12 +180,25 @@ function PublicPage() {
 
     }, [carregarHorarios]);
 
+    useEffect(() => {
+        setHorarioSelecionado("");
+        setBookingCompleted(false);
+    }, [data, servicosSelecionados]);
+
     return (
 
         <main className="public-page">
 
             <div className="public-card">
 
+                {profileLoading && <p>Carregando página pública...</p>}
+
+                {!profileLoading && profileError && (
+                    <p role="alert">{profileError}</p>
+                )}
+
+                {!profileLoading && !profileError && (
+                    <>
                 <h1>{profile?.nome || profile?.barbearia}</h1>
 
                 <p>
@@ -170,20 +219,21 @@ function PublicPage() {
                 <input placeholder="Seu telefone" value={telefone}
                     onChange={(e)=>setTelefone(e.target.value)} />
 
-                {!isClientAuthenticated ? (
-                    <button className="schedule-button" disabled={authLoading} onClick={autenticar}>
-                        {authLoading ? "Continuando..." : "Continuar"}
-                    </button>
+                {servicos.length === 0 ? (
+                    <p>Este negócio ainda não possui serviços disponíveis.</p>
                 ) : (
                     <>
-                        {servicos.length > 0 && <label className="field-label">Serviços</label>}
+                        <label className="field-label">Serviços</label>
                         {servicos.map((servico) => {
                             const id = Number(servico.id);
                             return <label key={id}>
                                 <input type="checkbox" checked={servicosSelecionados.includes(id)}
-                                    onChange={() => setServicosSelecionados((current) =>
-                                        current.includes(id) ? current.filter((value) => value !== id) : [...current, id]
-                                    )} />
+                                    onChange={() => {
+                                        setServicosSelecionados((current) =>
+                                            current.includes(id) ? current.filter((value) => value !== id) : [...current, id]
+                                        );
+                                        setBookingCompleted(false);
+                                    }} />
                                 {servico.nome}
                             </label>;
                         })}
@@ -197,6 +247,7 @@ function PublicPage() {
                         <h3> <Clock3 size={18}/> Horários disponíveis</h3>
 
                         <div className="time-grid">
+                            {availabilityLoading && <div>Carregando horários...</div>}
                             {horarios.map(({ horario }) => (
                                 <button key={horario}
                                     className={horarioSelecionado===horario ? "time-button selected" : "time-button"}
@@ -205,7 +256,16 @@ function PublicPage() {
                                 </button>
                             ))}
 
-                            {horarios.length === 0 && (
+                            {availabilityError && (
+                                <div role="alert" className="empty-times">
+                                    <p>{availabilityError}</p>
+                                    <button type="button" className="time-button" onClick={carregarHorarios}>
+                                        Tentar novamente
+                                    </button>
+                                </div>
+                            )}
+
+                            {!availabilityLoading && !availabilityError && horarios.length === 0 && servicosSelecionados.length > 0 && (
                                 <div className="empty-times">Nenhum horário disponível para esta data.</div>
                             )}
                         </div>
@@ -233,24 +293,21 @@ function PublicPage() {
 
                 </div>
 
-                {isClientAuthenticated && <button
-
-                    className="schedule-button"
-
-                    disabled={loading}
-
-                    onClick={handleAgendar}
-
-                >
-
-                    {
-                        loading
-                        ? "Agendando..."
-                        : "Confirmar Agendamento"
-                    }
-
-                </button>}
-
+                {servicos.length > 0 && (
+                    <button
+                        className="schedule-button"
+                        disabled={loading || authLoading || bookingCompleted}
+                        onClick={handleAgendar}
+                    >
+                        {bookingCompleted
+                            ? "Agendamento confirmado"
+                            : loading
+                            ? "Agendando..."
+                            : (authLoading ? "Continuando..." : "Confirmar Agendamento")}
+                    </button>
+                )}
+                    </>
+                )}
 
             </div>
 

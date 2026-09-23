@@ -2,15 +2,13 @@ import "./AppointmentCard.css"
 import { formatarDataCard } from "../../utils/formatarHorario"
 import StatusBadge from "../StatusBadge/StatusBadge"
 
-function AppointmentCard({ agendamento, onEdit }) {
+function AppointmentCard({ agendamento, onEdit, onCancel, canceling }) {
     const dataFormatada = formatarDataCard(agendamento.horario_inicio)
 
     return (
         <div 
             className="card-container"
             onClick={() => {
-                console.log("clicou")
-                console.log(agendamento)
                 onEdit(agendamento)}}
                 >
             
@@ -32,6 +30,20 @@ function AppointmentCard({ agendamento, onEdit }) {
             <div>
                 <StatusBadge status={agendamento.status } />
             </div>
+
+            {agendamento.status === "PENDENTE" && (
+                <button
+                    type="button"
+                    className="cancel-appointment-button"
+                    disabled={canceling}
+                    onClick={(event) => {
+                        event.stopPropagation();
+                        onCancel(agendamento);
+                    }}
+                >
+                    {canceling ? "Cancelando..." : "Cancelar agendamento"}
+                </button>
+            )}
         </div>
     )
 }

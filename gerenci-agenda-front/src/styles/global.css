@@ -10,10 +10,23 @@ body {
     background: var(--bg-primary);
 
     color: var(--text-primary);
+    min-width: 320px;
 }
 
 button {
     cursor: pointer;
 
     font-family: inherit;
+}
+
+button,
+input,
+select,
+textarea {
+    font: inherit;
+}
+
+img,
+svg {
+    max-width: 100%;
 }

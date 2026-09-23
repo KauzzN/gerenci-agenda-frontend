@@ -43,3 +43,17 @@
     font-size:1rem;
 
 }
+
+@media (max-width: 480px) {
+    .slug-input {
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+    .slug-input span {
+        border-bottom: 1px solid var(--border);
+        border-right: 0;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+}

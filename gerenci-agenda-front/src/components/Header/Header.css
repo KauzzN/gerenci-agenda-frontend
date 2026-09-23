@@ -95,6 +95,22 @@
     }
 
     .header {
-        padding: 12px 32px;
+        align-items: flex-start;
+        gap: 12px;
+        padding: 16px;
+    }
+
+    .header-second-container {
+        flex-shrink: 0;
+    }
+
+    .header-second-container > span,
+    .header-divider {
+        display: none;
+    }
+
+    .logout-button {
+        min-height: 44px;
+        padding: 10px;
     }
 }

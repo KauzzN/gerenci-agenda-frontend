@@ -1,7 +1,5 @@
 export function formatarHorario(dataISO) {
 
-    console.log(dataISO)
-    console.log(new Date(dataISO));
     return new Intl.DateTimeFormat("pt-BR", {
         day: "2-digit",
         month: "2-digit",

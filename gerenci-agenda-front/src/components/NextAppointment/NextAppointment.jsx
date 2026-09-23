@@ -1,4 +1,3 @@
-import { useEffect, useState } from "react";
 import { formatarHorario } from "../../utils/formatarHorario";
 import { ClockIcon, User2Icon } from "lucide-react";
 
@@ -7,13 +6,15 @@ import "./NextAppointment.css"
 
 
 function NextAppointment ({ stats }) {
-
-    const [proximo, setProximo] = useState();
-
-    useEffect(() => {
-        setProximo(stats?.proximo || null);
-
-    }, [stats]);
+    const candidate = stats?.proximo;
+    const hasValidNextAppointment = Boolean(
+        candidate
+        && typeof candidate.cliente === "string"
+        && candidate.cliente
+        && typeof candidate.horario_inicio === "string"
+        && !Number.isNaN(new Date(candidate.horario_inicio).getTime())
+    );
+    const proximo = hasValidNextAppointment ? candidate : null;
 
     return (
         <div className="next-container">
@@ -39,7 +40,7 @@ function NextAppointment ({ stats }) {
                                 <h2>{proximo.cliente}</h2>
                             </>
                         ) : (
-                            <p>Bom trabalho por hoje! 🎉</p>
+                            <p>Nenhum próximo atendimento.</p>
                         )
                     }
                 </div>

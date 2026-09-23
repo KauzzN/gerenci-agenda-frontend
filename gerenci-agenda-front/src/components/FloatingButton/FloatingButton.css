@@ -44,10 +44,11 @@
     .floating-button {
         left: 16px;
         right: 16px;
-        bottom: 16px;
+        bottom: calc(76px + env(safe-area-inset-bottom));
 
         width: auto;
 
         justify-content: center;
+        min-height: 48px;
     }
 }

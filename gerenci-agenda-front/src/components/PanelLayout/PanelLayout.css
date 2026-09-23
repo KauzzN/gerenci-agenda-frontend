@@ -1,0 +1,96 @@
+.panel-page {
+    min-height: 100dvh;
+    background: var(--bg-primary);
+    color: var(--text-primary);
+}
+
+.panel-content {
+    margin: 0 auto;
+    max-width: 960px;
+    padding: 0 32px 40px;
+}
+
+.panel-section {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    margin-bottom: 18px;
+    padding: 20px;
+}
+
+.panel-section form,
+.panel-form {
+    display: grid;
+    gap: 12px;
+}
+
+.panel-section input,
+.panel-section textarea,
+.panel-section select {
+    background: var(--bg-primary);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: var(--text-primary);
+    padding: 10px;
+    width: 100%;
+}
+
+.panel-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.panel-actions button,
+.panel-actions a {
+    background: var(--primary);
+    border: 0;
+    border-radius: 8px;
+    color: white;
+    cursor: pointer;
+    padding: 10px 14px;
+    text-decoration: none;
+}
+
+.panel-list {
+    display: grid;
+    gap: 10px;
+    list-style: none;
+    padding: 0;
+}
+
+.panel-list li {
+    align-items: center;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    display: flex;
+    gap: 12px;
+    justify-content: space-between;
+    padding: 12px;
+}
+
+@media (max-width: 600px) {
+    .panel-content {
+        padding-left: 16px;
+        padding-right: 16px;
+        padding-bottom: calc(88px + env(safe-area-inset-bottom));
+    }
+
+    .panel-list li {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .panel-section {
+        padding: 16px;
+    }
+
+    .panel-actions > * {
+        min-height: 44px;
+    }
+}
+.field-error {
+    color: #b91c1c;
+    font-size: .85rem;
+    margin: -8px 0 0;
+}
