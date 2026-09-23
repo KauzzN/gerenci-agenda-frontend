@@ -17,9 +17,10 @@ function PublicPage() {
 
     const { slug } = useParams();
 
-    const hoje = new Date().toLocaleDateString("en-CA");
+    const hoje = new Date();
+    const dataInicial = `${hoje.getFullYear()}-${String(hoje.getMonth() + 1).padStart(2, "0")}-${String(hoje.getDate()).padStart(2, "0")}`;
 
-    const [data, setData] = useState(hoje);
+    const [data, setData] = useState(dataInicial);
     const [profile, setProfile] = useState(null);
 
     const [horarios, setHorarios] = useState([]);
