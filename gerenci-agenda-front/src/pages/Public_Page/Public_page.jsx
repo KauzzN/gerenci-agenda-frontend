@@ -76,7 +76,7 @@ function PublicPage() {
     async function autenticar() {
         if (!nome.trim() || !telefone.trim()) {
             toast.error("Informe seu nome e telefone.");
-            return;
+            return false;
         }
 
         try {
@@ -87,8 +87,10 @@ function PublicPage() {
                 throw new Error("A API não retornou o token do cliente.");
             }
             setAuthenticated(token);
+            return true;
         } catch (error) {
             toast.error(error.response?.data?.error || "Não foi possível identificar o cliente.");
+            return false;
         } finally {
             setAuthLoading(false);
         }
@@ -239,46 +241,57 @@ function PublicPage() {
                             </label>;
                         })}
 
-                        <label className="field-label">
-                            <Calendar size={18}/> Escolha a data
-                        </label>
-
-                        <input
-                            type="date"
-                            value={data}
-                            onChange={async (e) => {
-                                setData(e.target.value);
-                                if (!isClientAuthenticated && nome.trim() && telefone.trim()) {
-                                    await autenticar();
-                                }
-                            }}
-                        />
-
-                        <h3> <Clock3 size={18}/> Horários disponíveis</h3>
-
-                        <div className="time-grid">
-                            {availabilityLoading && <div>Carregando horários...</div>}
-                            {horarios.map(({ horario }) => (
-                                <button key={horario}
-                                    className={horarioSelecionado===horario ? "time-button selected" : "time-button"}
-                                    onClick={()=>setHorarioSelecionado(horario)}>
-                                    {horario}
+                        {!isClientAuthenticated ? (
+                            <>
+                                <p>Informe seus dados para consultar os horários disponíveis.</p>
+                                <button
+                                    type="button"
+                                    className="schedule-button"
+                                    onClick={autenticar}
+                                    disabled={authLoading}
+                                >
+                                    {authLoading ? "Identificando..." : "Continuar"}
                                 </button>
-                            ))}
+                            </>
+                        ) : (
+                            <>
+                                <label className="field-label">
+                                    <Calendar size={18}/> Escolha a data
+                                </label>
 
-                            {availabilityError && (
-                                <div role="alert" className="empty-times">
-                                    <p>{availabilityError}</p>
-                                    <button type="button" className="time-button" onClick={carregarHorarios}>
-                                        Tentar novamente
-                                    </button>
+                                <input
+                                    type="date"
+                                    value={data}
+                                    onChange={(e) => setData(e.target.value)}
+                                />
+
+                                <h3> <Clock3 size={18}/> Horários disponíveis</h3>
+
+                                <div className="time-grid">
+                                    {availabilityLoading && <div>Carregando horários...</div>}
+                                    {horarios.map(({ horario }) => (
+                                        <button key={horario}
+                                            className={horarioSelecionado===horario ? "time-button selected" : "time-button"}
+                                            onClick={()=>setHorarioSelecionado(horario)}>
+                                            {horario}
+                                        </button>
+                                    ))}
+
+                                    {availabilityError && (
+                                        <div role="alert" className="empty-times">
+                                            <p>{availabilityError}</p>
+                                            <button type="button" className="time-button" onClick={carregarHorarios}>
+                                                Tentar novamente
+                                            </button>
+                                        </div>
+                                    )}
+
+                                    {!availabilityLoading && !availabilityError && horarios.length === 0 && servicosSelecionados.length > 0 && (
+                                        <div className="empty-times">Nenhum horário disponível para esta data.</div>
+                                    )}
                                 </div>
-                            )}
-
-                            {!availabilityLoading && !availabilityError && horarios.length === 0 && servicosSelecionados.length > 0 && (
-                                <div className="empty-times">Nenhum horário disponível para esta data.</div>
-                            )}
-                        </div>
+                            </>
+                        )}
                     </>
                 )}
 
