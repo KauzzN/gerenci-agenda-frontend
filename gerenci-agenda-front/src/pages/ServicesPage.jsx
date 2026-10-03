@@ -1,8 +1,8 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import toast from "react-hot-toast";
 import PanelLayout from "../components/PanelLayout/PanelLayout";
-import { criarServico, listarServicos } from "../services/agendamento";
-import api from "../services/api";
+import { atualizarServico, criarServico, listarServicos } from "../services/agendamento";
+import "./ServicesPage.css";
 
 const emptyService = {
     nome: "",
@@ -18,6 +18,8 @@ function ServicesPage() {
     const [service, setService] = useState(emptyService);
     const [editingId, setEditingId] = useState(null);
     const [loading, setLoading] = useState(true);
+    const [loadError, setLoadError] = useState("");
+    const [query, setQuery] = useState("");
     const [saving, setSaving] = useState(false);
     const [fieldErrors, setFieldErrors] = useState({});
     const savingRef = useRef(false);
@@ -25,8 +27,10 @@ function ServicesPage() {
     async function loadServices() {
         try {
             setLoading(true);
+            setLoadError("");
             setServices(await listarServicos());
         } catch {
+            setLoadError("Não foi possível carregar os serviços. Tente novamente.");
             toast.error("Não foi possível carregar os serviços.");
         } finally {
             setLoading(false);
@@ -74,9 +78,9 @@ function ServicesPage() {
             setSaving(true);
             setFieldErrors({});
             if (editingId) {
-                const response = await api.patch(`/serv/update/${editingId}`, payload);
+                const updated = await atualizarServico(editingId, payload);
                 setServices((current) => current.map((item) => (
-                    item.id === editingId ? response.data.servico : item
+                    item.id === editingId ? (updated || { ...item, ...payload }) : item
                 )));
                 toast.success("Serviço atualizado.");
             } else {
@@ -117,21 +121,29 @@ function ServicesPage() {
         });
     }
 
+    const visibleServices = useMemo(() => {
+        const normalizedQuery = query.trim().toLocaleLowerCase();
+        return services.filter((item) => item.nome?.toLocaleLowerCase().includes(normalizedQuery));
+    }, [services, query]);
+
     return (
         <PanelLayout>
-            <h2>Serviços</h2>
+            <header className="services-heading">
+                <div><p className="eyebrow">Catálogo</p><h2>Serviços</h2><p>Gerencie o que seus clientes podem agendar.</p></div>
+                <span className="service-count">{services.length} {services.length === 1 ? "serviço" : "serviços"}</span>
+            </header>
             <section className="panel-section">
                 <h3>{editingId ? "Editar serviço" : "Novo serviço"}</h3>
-                <form className="panel-form" onSubmit={handleSubmit}>
+                <form className="panel-form service-form" onSubmit={handleSubmit} noValidate>
                     <input aria-label="Nome" name="nome" placeholder="Nome" value={service.nome} onChange={updateField} />
                     {fieldErrors.nome && <p className="field-error" role="alert">{fieldErrors.nome}</p>}
                     <input aria-label="Preço" name="preco" placeholder="Preço" inputMode="decimal" value={service.preco} onChange={updateField} />
                     {fieldErrors.preco && <p className="field-error" role="alert">{fieldErrors.preco}</p>}
                     <input aria-label="Duração em minutos" name="duracao" placeholder="Duração em minutos" inputMode="numeric" value={service.duracao} onChange={updateField} />
                     {fieldErrors.duracao && <p className="field-error" role="alert">{fieldErrors.duracao}</p>}
-                    <textarea name="descricao" placeholder="Descrição (opcional)" value={service.descricao} onChange={updateField} />
+                    <label className="service-wide">Descrição (opcional)<textarea name="descricao" placeholder="Adicione detalhes para sua equipe." value={service.descricao} onChange={updateField} /></label>
                     <input aria-label="Cor do serviço" name="cor" type="color" value={service.cor} onChange={updateField} />
-                    {editingId && <label><input name="ativo" type="checkbox" checked={service.ativo} onChange={updateField} /> Serviço ativo</label>}
+                    {editingId && typeof service.ativo === "boolean" && <label><input name="ativo" type="checkbox" checked={service.ativo} onChange={updateField} /> Serviço ativo</label>}
                     <div className="panel-actions">
                         {editingId && <button type="button" onClick={() => { setEditingId(null); setService(emptyService); }}>Cancelar edição</button>}
                         <button type="submit" disabled={saving}>{saving ? "Salvando..." : "Salvar serviço"}</button>
@@ -140,15 +152,20 @@ function ServicesPage() {
             </section>
             <section className="panel-section">
                 <h3>Serviços cadastrados</h3>
-                {loading ? <p>Carregando serviços...</p> : services.length === 0 ? (
+                <label className="search-field">Buscar serviço<input aria-label="Buscar serviço" placeholder="Buscar por nome" value={query} onChange={(event) => setQuery(event.target.value)} /></label>
+                {loading ? <p className="state-message">Carregando serviços...</p> : loadError ? (
+                    <div className="state-message"><p>{loadError}</p><button type="button" onClick={loadServices}>Tentar novamente</button></div>
+                ) : services.length === 0 ? (
                     <p>Você ainda não possui serviços cadastrados.</p>
+                ) : visibleServices.length === 0 ? (
+                    <p className="state-message">Nenhum serviço corresponde à sua busca.</p>
                 ) : (
                     <ul className="panel-list">
-                        {services.map((item) => (
+                        {visibleServices.map((item) => (
                             <li key={item.id}>
                                 <div>
                                     <strong>{item.nome}</strong>
-                                    <p>R$ {item.preco} • {item.duracao} min • {item.ativo ? "Ativo" : "Inativo"}</p>
+                                    <p>R$ {item.preco} • {item.duracao} min {typeof item.ativo === "boolean" && `• ${item.ativo ? "Ativo" : "Inativo"}`}</p>
                                 </div>
                                 <button type="button" onClick={() => editService(item)}>Editar</button>
                             </li>
