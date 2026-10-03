@@ -1,0 +1,25 @@
+.settings-hours { border-top: 1px solid var(--border); padding-top: 18px; }
+.settings-hint { color: var(--text-secondary); font-size: .9rem; }
+.weekday-grid { display: grid; gap: 8px; margin: 10px 0 14px; }
+.weekday-toggle { align-items: center; border: 1px solid var(--border); border-radius: 8px; display: flex; gap: 10px; padding: 10px; }
+.weekday-toggle input { height: 1px; opacity: 0; position: absolute; width: 1px; }
+.weekday-toggle strong { color: var(--text-secondary); font-size: .75rem; margin-left: auto; }
+.weekday-toggle.is-on { border-color: var(--primary); }
+.weekday-toggle.is-on strong { color: var(--success); }
+.toggle-track { background: var(--border); border-radius: 20px; height: 20px; padding: 2px; width: 36px; }
+.toggle-track span { background: var(--text-secondary); border-radius: 50%; display: block; height: 16px; transition: transform .15s; width: 16px; }
+.is-on .toggle-track { background: var(--primary); }
+.is-on .toggle-track span { background: white; transform: translateX(16px); }
+.time-grid { display: grid; gap: 12px; }
+.time-grid label { color: var(--text-secondary); font-size: .9rem; }
+.time-grid input { display: block; margin-top: 5px; }
+.save-feedback { align-self: center; font-size: .9rem; }
+.save-feedback.success { color: var(--success); }
+.save-feedback.error { color: var(--danger); }
+@media (min-width: 640px) {
+  .weekday-grid, .time-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (min-width: 900px) {
+  .weekday-grid { grid-template-columns: repeat(4, 1fr); }
+  .time-grid { grid-template-columns: repeat(4, 1fr); }
+}
