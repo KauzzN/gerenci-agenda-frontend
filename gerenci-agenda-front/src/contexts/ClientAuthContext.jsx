@@ -1,4 +1,4 @@
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 import { clearClientTokens, getClientAccess } from "../utils/token";
 
 export const ClientAuthContext = createContext(null);
@@ -14,6 +14,11 @@ export function ClientAuthProvider({ children }) {
         clearClientTokens();
         setClientToken(null);
     }
+
+    useEffect(() => {
+        window.addEventListener("client-auth:expired", logoutClient);
+        return () => window.removeEventListener("client-auth:expired", logoutClient);
+    }, []);
 
     return (
         <ClientAuthContext.Provider value={{
