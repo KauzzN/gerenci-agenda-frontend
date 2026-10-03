@@ -151,12 +151,105 @@
 
 }
 
+.dashboard-welcome {
+    align-items: flex-end;
+    display: flex;
+    gap: 24px;
+    justify-content: space-between;
+    margin: 0 auto 20px;
+    max-width: 1200px;
+    padding: 0 32px;
+}
+
+.dashboard-welcome h2 {
+    margin: 4px 0;
+}
+
+.eyebrow {
+    color: var(--primary);
+    font-size: .78rem;
+    font-weight: 700;
+    letter-spacing: .08em;
+    margin: 0;
+    text-transform: uppercase;
+}
+
+.dashboard-muted {
+    color: var(--text-secondary);
+    margin: 0;
+}
+
+.quick-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    justify-content: flex-end;
+}
+
+.quick-actions button,
+.dashboard-notice button {
+    align-items: center;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: var(--text-primary);
+    cursor: pointer;
+    display: inline-flex;
+    gap: 7px;
+    min-height: 40px;
+    padding: 9px 12px;
+}
+
+.quick-actions button:first-child,
+.dashboard-notice button {
+    background: var(--primary);
+    border-color: var(--primary);
+    color: #fff;
+}
+
+.dashboard-notice {
+    align-items: center;
+    background: rgba(249, 115, 22, .1);
+    border: 1px solid rgba(249, 115, 22, .45);
+    border-radius: 10px;
+    display: flex;
+    gap: 12px;
+    margin: 0 auto 20px;
+    max-width: 1136px;
+    padding: 12px 16px;
+}
+
+.dashboard-notice span {
+    color: var(--text-secondary);
+    flex: 1;
+}
+
 @media (max-width: 900px) {
+    .dashboard-welcome {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+    .quick-actions {
+        justify-content: flex-start;
+    }
     .dashboard-content {
         flex-direction: column;
     }
 
     @media (max-width: 767px) {
+        .dashboard-welcome {
+            padding: 0 16px;
+        }
+        .quick-actions button {
+            flex: 1 1 calc(50% - 8px);
+            justify-content: center;
+        }
+        .dashboard-notice {
+            align-items: flex-start;
+            flex-direction: column;
+            margin-left: 16px;
+            margin-right: 16px;
+        }
         .dashboard-content {
             gap: 16px;
             padding: 16px;

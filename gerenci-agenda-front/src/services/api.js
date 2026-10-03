@@ -58,6 +58,7 @@ clientApi.interceptors.response.use(
 
         if (!refresh) {
             clearClientTokens();
+            window.dispatchEvent(new Event("client-auth:expired"));
             return Promise.reject(error);
         }
 
@@ -79,6 +80,7 @@ clientApi.interceptors.response.use(
             return clientApi(originalRequest);
         } catch (refreshError) {
             clearClientTokens();
+            window.dispatchEvent(new Event("client-auth:expired"));
             return Promise.reject(refreshError);
         }
     }

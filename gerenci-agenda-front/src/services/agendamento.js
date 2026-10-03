@@ -42,6 +42,19 @@ export async function criarServico({ nome, preco, duracao, descricao, cor }) {
     return response.data?.servico;
 }
 
+export async function atualizarServico(id, { nome, preco, duracao, descricao, cor, ativo }) {
+    const response = await api.patch(`/serv/update/${id}`, {
+        nome,
+        preco,
+        duracao,
+        descricao,
+        cor,
+        ativo
+    });
+
+    return response.data?.servico;
+}
+
 export async function listarClientes() {
     const response = await api.get("/cli/read/clients");
     return response.data?.clientes || [];

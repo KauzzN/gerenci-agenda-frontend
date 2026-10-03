@@ -14,7 +14,7 @@ import ModalAgendamento from "../components/ModalAgendamento/ModalAgendamento";
 import { logout } from "../services/auth";
 import DashboardStats from "../components/DashboardStats/DashboardStats";
 import NextAppointment from "../components/NextAppointment/NextAppointment";
-import { CopyIcon, Link } from "lucide-react";
+import { CopyIcon, Link, Plus, Users, Wrench, Settings } from "lucide-react";
 import toast from "react-hot-toast";
 import ModalSlug from "../components/ModalSlug/ModalSlug";
 import ModalServico from "../components/ModalServico/ModalServico";
@@ -62,9 +62,14 @@ function Dashboard () {
 
     // Função copiar link
     function copiarLink() {
-        navigator.clipboard.writeText(link);
-
-        toast.success("Link copiado")
+        if (!link) {
+            toast.error("Configure seu link público em Ajustes.");
+            return;
+        }
+        navigator.clipboard.writeText(link).then(
+            () => toast.success("Link copiado"),
+            () => toast.error("Não foi possível copiar o link.")
+        );
     }
 
     // Função buscar estatisticas díaris
@@ -228,6 +233,30 @@ function Dashboard () {
                     <small>Seu link público</small>
 
                 </div>
+
+                <section className="dashboard-welcome">
+                    <div>
+                        <p className="eyebrow">Visão operacional</p>
+                        <h2>Agenda de hoje</h2>
+                        <p className="dashboard-muted">Acompanhe seus atendimentos e acesse as tarefas mais usadas.</p>
+                    </div>
+                    <div className="quick-actions" aria-label="Ações rápidas">
+                        <button type="button" onClick={() => { setAgendamentoSelecionado(null); setOpenModal(true); }}>
+                            <Plus size={18} /> Novo agendamento
+                        </button>
+                        <button type="button" onClick={() => navigate("/clientes")}><Users size={18} /> Clientes</button>
+                        <button type="button" onClick={() => navigate("/servicos")}><Wrench size={18} /> Serviços</button>
+                        <button type="button" onClick={() => navigate("/configuracoes")}><Settings size={18} /> Ajustes</button>
+                    </div>
+                </section>
+
+                {profileChecked && Array.isArray(profile?.dias_funcionando) && profile.dias_funcionando.length === 0 && (
+                    <div className="dashboard-notice" role="status">
+                        <strong>Configure seus dias de funcionamento</strong>
+                        <span>Seu calendário público ainda não tem dias disponíveis.</span>
+                        <button type="button" onClick={() => navigate("/configuracoes")}>Abrir Ajustes</button>
+                    </div>
+                )}
 
                 <div className="public-link-button">
                     <button onClick={copiarLink}
