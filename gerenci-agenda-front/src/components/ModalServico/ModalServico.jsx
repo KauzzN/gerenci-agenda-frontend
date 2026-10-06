@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { criarServico, listarServicos } from "../../services/agendamento";
 import "../ModalAgendamento/ModalAgendamento.css";
+import { X } from "lucide-react";
 
 function ModalServico({ onClose }) {
     const [nome, setNome] = useState("");
@@ -68,8 +69,13 @@ function ModalServico({ onClose }) {
         <div className="modal-overlay" onClick={onClose}>
             <div className="modal-container" role="dialog" aria-modal="true" aria-labelledby="service-modal-title" onClick={(event) => event.stopPropagation()}>
                 <div className="modal-header">
-                    <h2 id="service-modal-title">Novo serviço</h2>
-                    <p>Cadastre os serviços disponíveis para seus clientes.</p>
+                    <div>
+                        <h2 id="service-modal-title">Novo serviço</h2>
+                        <p>Cadastre os serviços disponíveis para seus clientes.</p>
+                    </div>
+                    <button type="button" className="modal-close-button" aria-label="Fechar" onClick={onClose}>
+                        <X size={20} />
+                    </button>
                 </div>
 
                 <form onSubmit={handleSubmit}>

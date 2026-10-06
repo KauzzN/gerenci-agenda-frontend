@@ -7,6 +7,7 @@ import {
     listarClientes,
     listarServicos
 } from "../../services/agendamento";
+import { X } from "lucide-react";
 import "./ModalAgendamento.css";
 
 function separarHorarioLocal(dataISO) {
@@ -157,8 +158,13 @@ function ModalAgendamento({ onClose, onCreated, agendamento = null, dataInicial 
     return <div className="modal-overlay" onClick={onClose}>
         <div className="modal-container" role="dialog" aria-modal="true" aria-labelledby="appointment-modal-title" onClick={(event) => event.stopPropagation()}>
             <div className="modal-header">
-                <h2 id="appointment-modal-title">{editando ? "Editar Agendamento" : "Novo Agendamento"}</h2>
-                <p>Informe o cliente, serviço e horário do atendimento.</p>
+                <div>
+                    <h2 id="appointment-modal-title">{editando ? "Editar Agendamento" : "Novo Agendamento"}</h2>
+                    <p>Informe o cliente, serviço e horário do atendimento.</p>
+                </div>
+                <button type="button" className="modal-close-button" aria-label="Fechar" onClick={onClose}>
+                    <X size={20} />
+                </button>
             </div>
             {preparing ? <p>Carregando dados do agendamento...</p> : loadError ? (
                 <div role="alert">

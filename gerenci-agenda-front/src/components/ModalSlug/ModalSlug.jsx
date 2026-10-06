@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { atualizarProfile } from "../../services/agendamento";
 import toast from "react-hot-toast";
+import { X } from "lucide-react";
 
 function ModalSlug({ profile, onClose, onUpdated}) {
 
@@ -57,18 +58,25 @@ function ModalSlug({ profile, onClose, onUpdated}) {
         <div className="modal-overlay"
             onClick={onClose}>
 
-            <div className="modal-container"
+            <div className="modal-container modal-container-compact"
+                role="dialog"
+                aria-modal="true"
+                aria-labelledby="public-link-modal-title"
                 onClick={(e) => e.stopPropagation()}>
 
-                    <h2>Editar link público</h2>
-
-                    <p>
-                        Escolha um endereço simples para compartilhar com seus clientes.
-                    </p>
+                    <div className="modal-header">
+                        <div>
+                            <h2 id="public-link-modal-title">Editar link público</h2>
+                            <p>Escolha um endereço simples para compartilhar com seus clientes.</p>
+                        </div>
+                        <button type="button" className="modal-close-button" aria-label="Fechar" onClick={onClose}>
+                            <X size={20} />
+                        </button>
+                    </div>
 
                     <form onSubmit={handleSubmit}>
 
-                        <label>Link</label>
+                        <label htmlFor="public-slug">Link</label>
 
                         <div className="slug-input">
 
@@ -76,7 +84,8 @@ function ModalSlug({ profile, onClose, onUpdated}) {
                                 gerenciagenda.com/
                             </span>
 
-                            <input 
+                            <input
+                             id="public-slug"
                              value={slug}
                              onChange={(e) => setSlug(e.target.value)}/>
 
