@@ -7,6 +7,8 @@ function AppointmentCard({ agendamento, onEdit, onCancel, canceling }) {
     const services = Array.isArray(agendamento.servicos) ? agendamento.servicos : []
     const serviceNames = services.map((service) => typeof service === "string" ? service : service.nome).filter(Boolean)
     const visibleServices = services.slice(0, 3)
+    const visibleServiceNames = serviceNames.slice(0, 3)
+    const additionalServiceCount = Math.max(serviceNames.length - visibleServiceNames.length, 0)
     const serviceColor = services.find((service) => /^#[0-9A-Fa-f]{3,8}$/.test(service?.cor || ""))?.cor
 
     return (
@@ -43,7 +45,10 @@ function AppointmentCard({ agendamento, onEdit, onCancel, canceling }) {
                     <div className="card-services" aria-label={serviceNames.length > 0 ? `Serviços: ${serviceNames.join(", ")}` : "Serviço não informado"}>
                         {serviceNames.length > 0 ? (
                             <>
-                                <span className="card-service-names">{serviceNames.join(" + ")}</span>
+                                <span className="card-service-names">
+                                    {visibleServiceNames.join(" · ")}
+                                    {additionalServiceCount > 0 && ` +${additionalServiceCount}`}
+                                </span>
                                 <span className="service-color-indicators" aria-hidden="true">
                                     {visibleServices.map((service, index) => (
                                         <span
@@ -60,23 +65,22 @@ function AppointmentCard({ agendamento, onEdit, onCancel, canceling }) {
                 </div>
             </div>
 
-            <div>
+            <div className="card-actions">
                 <StatusBadge status={agendamento.status } />
+                {agendamento.status === "PENDENTE" && (
+                    <button
+                        type="button"
+                        className="cancel-appointment-button"
+                        disabled={canceling}
+                        onClick={(event) => {
+                            event.stopPropagation();
+                            onCancel(agendamento);
+                        }}
+                    >
+                        {canceling ? "Cancelando..." : "Cancelar agendamento"}
+                    </button>
+                )}
             </div>
-
-            {agendamento.status === "PENDENTE" && (
-                <button
-                    type="button"
-                    className="cancel-appointment-button"
-                    disabled={canceling}
-                    onClick={(event) => {
-                        event.stopPropagation();
-                        onCancel(agendamento);
-                    }}
-                >
-                    {canceling ? "Cancelando..." : "Cancelar agendamento"}
-                </button>
-            )}
         </div>
     )
 }
