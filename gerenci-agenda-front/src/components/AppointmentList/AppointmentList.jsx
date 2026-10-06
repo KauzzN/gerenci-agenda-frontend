@@ -1,4 +1,7 @@
 import AppointmentCard from "../AppointmentCard/AppointmentCard";
+import EmptyState from "../ui/EmptyState";
+import ErrorState from "../ui/ErrorState";
+import LoadingState from "../ui/LoadingState";
 import "./AppointmentList.css";
 
 function AppointmentList({
@@ -46,21 +49,19 @@ function AppointmentList({
             </div>
 
             <div className="appointment-card-box">
-                {loading && <p>Carregando agendamentos...</p>}
+                {loading && <LoadingState label="Carregando agendamentos..." />}
 
                 {!loading && errorType && (
-                    <div role="alert">
-                        <p>
-                            {errorType === "network"
-                                ? "Não foi possível conectar para carregar os agendamentos."
-                                : "Não foi possível carregar os agendamentos."}
-                        </p>
-                        <button type="button" onClick={onRetry}>Tentar novamente</button>
-                    </div>
+                    <ErrorState
+                        message={errorType === "network"
+                            ? "Não foi possível conectar para carregar os agendamentos."
+                            : "Não foi possível carregar os agendamentos."}
+                        action={<button type="button" onClick={onRetry}>Tentar novamente</button>}
+                    />
                 )}
 
                 {!loading && !errorType && agendamentos.length === 0 && (
-                    <p>Nenhum agendamento para esta data.</p>
+                    <EmptyState title="Nenhum agendamento para este dia." />
                 )}
 
                 {!loading && !errorType && agendamentos.map((agendamento) => (
