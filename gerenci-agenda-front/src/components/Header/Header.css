@@ -1,10 +1,11 @@
 .header {
     display: flex;
-    min-height: 90px;
+    min-height: 76px;
     justify-content: space-between;
     align-items: center;
-    padding: 28px 32px;
-    background: var(--bg-primary);
+    gap: var(--space-5);
+    padding: var(--space-5) var(--space-8);
+    background: var(--color-bg-canvas);
 }
 
 .header-container {
@@ -12,17 +13,17 @@
     text-align: left;
     flex-direction: column;
 
-    gap: 10px;
+    gap: var(--space-2);
 }
 
 .header-container small {
-    color: var(--text-secondary);
-    font-size: .95rem;
+    color: var(--color-text-secondary);
+    font-size: var(--text-small);
 }
 
 
 .header h1 {
-    font-size: 2rem;
+    font: 700 var(--text-h1)/1.15 var(--font-display);
     font-weight: 700;
 }
 
@@ -31,15 +32,15 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    gap: 8px;
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    color: var(--text-primary);
-    padding: 10px 18px;
-    transition: .2s;
+    gap: var(--space-2);
+    border: 1px solid var(--color-border-subtle);
+    border-radius: var(--radius-md);
+    color: var(--color-text-primary);
+    min-height: 44px;
+    padding: var(--space-3) var(--space-4);
 }
 .public-profile-link:hover {
-    background: var(--bg-hover);
+    background: var(--color-bg-hover);
 }
 
 @media (max-width: 756px) {
@@ -47,18 +48,14 @@
         font-size: 1.35rem;
     }
 
-    .header h1 {
-        font-size: .95rem;
-    }
-
     .header small {
-        font-size: .80rem;
+        font-size: var(--text-caption);
     }
 
     .header {
         align-items: flex-start;
         gap: 12px;
-        padding: 16px;
+        padding: var(--space-4);
     }
 
     .public-profile-link {
