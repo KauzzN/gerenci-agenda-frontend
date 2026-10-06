@@ -8,6 +8,9 @@ const emptyProfile = {
     nome_negocio: "",
     public_slug: "",
     telefone: "",
+    endereco: "",
+    instagram: "",
+    descricao: "",
     horario_inicio: "",
     horario_fim: "",
     inicio_almoco: "",
@@ -30,6 +33,7 @@ function SettingsPage() {
     const [saving, setSaving] = useState(false);
     const [fieldErrors, setFieldErrors] = useState({});
     const [saveState, setSaveState] = useState(null);
+    const [loadError, setLoadError] = useState("");
     const savingRef = useRef(false);
     const publicLink = profile.public_slug
         ? `${window.location.origin}/book/${profile.public_slug}`
@@ -39,6 +43,7 @@ function SettingsPage() {
         async function loadProfile() {
             try {
                 const data = await buscarProfile();
+                setLoadError("");
                 setProfile({
                     ...emptyProfile,
                     ...data,
@@ -50,7 +55,10 @@ function SettingsPage() {
                 });
             } catch (error) {
                 if (error.response?.status !== 404) {
+                    setLoadError("Não foi possível carregar as configurações.");
                     toast.error("Não foi possível carregar as configurações.");
+                } else {
+                    setLoadError("Seu perfil ainda não está configurado.");
                 }
             } finally {
                 setLoading(false);
@@ -73,6 +81,12 @@ function SettingsPage() {
             return { ...current, dias_funcionando: days.includes(day) ? days.filter((item) => item !== day) : [...days, day] };
         });
         setSaveState(null);
+    }
+
+    function copiarLink() {
+        navigator.clipboard.writeText(publicLink)
+            .then(() => toast.success("Link copiado."))
+            .catch(() => toast.error("Não foi possível copiar o link."));
     }
 
     function validate() {
@@ -142,13 +156,21 @@ function SettingsPage() {
     return (
         <PanelLayout>
             <h2>Configurações</h2>
-            {loading ? <p>Carregando configurações...</p> : (
+            {loading ? <p>Carregando configurações...</p> : loadError ? (
+                <section className="panel-section settings-state" role="alert">
+                    <p>{loadError}</p>
+                    <button type="button" onClick={() => window.location.reload()}>Tentar novamente</button>
+                </section>
+            ) : (
                 <form className="panel-section panel-form" onSubmit={handleSubmit}>
                     <h3>Perfil do negócio</h3>
                     <input name="nome_negocio" placeholder="Nome do negócio" value={profile.nome_negocio} onChange={updateField} />
                     <input aria-label="Slug público" name="public_slug" placeholder="Slug público" value={profile.public_slug || ""} onChange={updateField} />
                     {fieldErrors.public_slug && <p className="field-error" role="alert">{fieldErrors.public_slug}</p>}
                     <input name="telefone" placeholder="Telefone" value={profile.telefone || ""} onChange={updateField} />
+                    <input name="endereco" placeholder="Endereço" value={profile.endereco || ""} onChange={updateField} />
+                    <input name="instagram" placeholder="Instagram" value={profile.instagram || ""} onChange={updateField} />
+                    <label>Descrição<textarea name="descricao" placeholder="Conte um pouco sobre o negócio." value={profile.descricao || ""} onChange={updateField} /></label>
 
                     <section className="settings-hours" aria-labelledby="hours-heading">
                         <h3 id="hours-heading">Dias de funcionamento</h3>
@@ -178,7 +200,7 @@ function SettingsPage() {
                             <p>{publicLink}</p>
                             <div className="panel-actions">
                                 <a href={publicLink} target="_blank" rel="noreferrer">Abrir página</a>
-                                <button type="button" onClick={() => navigator.clipboard.writeText(publicLink).then(() => toast.success("Link copiado."))}>Copiar link</button>
+                                <button type="button" onClick={copiarLink}>Copiar link</button>
                             </div>
                         </div>
                     )}
