@@ -66,9 +66,9 @@ function ModalServico({ onClose }) {
 
     return (
         <div className="modal-overlay" onClick={onClose}>
-            <div className="modal-container" onClick={(event) => event.stopPropagation()}>
+            <div className="modal-container" role="dialog" aria-modal="true" aria-labelledby="service-modal-title" onClick={(event) => event.stopPropagation()}>
                 <div className="modal-header">
-                    <h2>Serviços</h2>
+                    <h2 id="service-modal-title">Novo serviço</h2>
                     <p>Cadastre os serviços disponíveis para seus clientes.</p>
                 </div>
 
@@ -97,10 +97,15 @@ function ModalServico({ onClose }) {
                     />
                     <input
                         aria-label="Cor do serviço"
+                        className="service-color-input"
                         type="color"
                         value={cor}
                         onChange={(event) => setCor(event.target.value)}
                     />
+                    <div className="service-color-preview" aria-live="polite">
+                        <span className="service-color-indicator" style={{ "--service-color": cor }} aria-hidden="true" />
+                        <span>Esta será a cor de identificação do serviço.</span>
+                    </div>
 
                     <div className="modal-actions">
                         <button type="button" onClick={onClose}>Fechar</button>
@@ -118,7 +123,8 @@ function ModalServico({ onClose }) {
                         <ul>
                             {servicos.map((servico) => (
                                 <li key={servico.id}>
-                                    {servico.nome} — R$ {servico.preco}
+                                    <span className="service-color-indicator" style={{ "--service-color": /^#[0-9A-Fa-f]{3,8}$/.test(servico.cor || "") ? servico.cor : "var(--color-border-strong)" }} aria-hidden="true" />
+                                    <span>{servico.nome} — R$ {servico.preco}</span>
                                 </li>
                             ))}
                         </ul>

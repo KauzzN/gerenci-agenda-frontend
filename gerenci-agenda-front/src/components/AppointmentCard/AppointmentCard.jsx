@@ -29,9 +29,12 @@ function AppointmentCard({ agendamento, onEdit, onCancel, canceling }) {
             <div className="card-box">
 
                 <div className="card-time">
-                    <h2>{dataFormatada.horario}</h2>
+                    <div className="card-time-range">
+                        <h2>{dataFormatada.horario}</h2>
+                        <span aria-hidden="true">—</span>
+                        <strong>{formatarDataCard(agendamento.horario_fim).horario}</strong>
+                    </div>
                     <p>{dataFormatada.dia}</p>
-                    <small>até {formatarDataCard(agendamento.horario_fim).horario}</small>
                 </div>
 
                 <div className="card-name">

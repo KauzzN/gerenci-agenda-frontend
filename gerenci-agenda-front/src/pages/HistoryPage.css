@@ -41,6 +41,20 @@
     margin: var(--space-1) 0 0;
 }
 
+.history-services {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+    margin-top: var(--space-2);
+}
+
+.history-service {
+    align-items: center;
+    color: var(--color-text-secondary);
+    display: inline-flex;
+    gap: var(--space-1);
+}
+
 @media (max-width: 600px) {
     .history-group .panel-list li {
         align-items: flex-start;

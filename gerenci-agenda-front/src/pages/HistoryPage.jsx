@@ -108,9 +108,20 @@ function HistoryPage() {
                                     <li key={item.id}>
                                         <div className="history-item-main">
                                             <strong>{formatTime(item.horario_inicio)} — {item.cliente || "Cliente não informado"}</strong>
-                                            <p>{Array.isArray(item.servicos) && item.servicos.length > 0
-                                                ? item.servicos.map((service) => service.nome || service).join(" + ")
-                                                : "Serviço não informado"}</p>
+                                            {Array.isArray(item.servicos) && item.servicos.length > 0 ? (
+                                                <div className="history-services" aria-label={`Serviços: ${item.servicos.map((service) => service.nome || service).join(", ")}`}>
+                                                    {item.servicos.map((service, index) => (
+                                                        <span className="history-service" key={`${service.nome || service}-${index}`}>
+                                                            <span
+                                                                className="service-color-indicator"
+                                                                aria-hidden="true"
+                                                                style={{ "--service-color": /^#[0-9A-Fa-f]{3,8}$/.test(service?.cor || "") ? service.cor : "var(--color-border-strong)" }}
+                                                            />
+                                                            {service.nome || service}
+                                                        </span>
+                                                    ))}
+                                                </div>
+                                            ) : <p>Serviço não informado</p>}
                                             {item.horario_fim && <small>Até {formatTime(item.horario_fim)}</small>}
                                         </div>
                                         <StatusBadge status={item.status} />

@@ -171,8 +171,16 @@ function ServicesPage() {
                         {visibleServices.map((item) => (
                             <li key={item.id}>
                                 <div>
-                                    <strong>{item.nome}</strong>
+                                    <strong className="service-list-name">
+                                        <span
+                                            className="service-color-indicator"
+                                            aria-hidden="true"
+                                            style={{ "--service-color": /^#[0-9A-Fa-f]{3,8}$/.test(item.cor || "") ? item.cor : "var(--color-border-strong)" }}
+                                        />
+                                        {item.nome}
+                                    </strong>
                                     <p>R$ {Number(item.preco).toFixed(2).replace(".", ",")} • {item.duracao} min {typeof item.ativo === "boolean" && `• ${item.ativo ? "Ativo" : "Inativo"}`}</p>
+                                    {item.descricao && <small className="service-list-description">{item.descricao}</small>}
                                 </div>
                                 <button type="button" onClick={() => editService(item)}>Editar</button>
                             </li>

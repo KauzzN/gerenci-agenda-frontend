@@ -155,9 +155,9 @@ function ModalAgendamento({ onClose, onCreated, agendamento = null, dataInicial 
     }
 
     return <div className="modal-overlay" onClick={onClose}>
-        <div className="modal-container" onClick={(event) => event.stopPropagation()}>
+        <div className="modal-container" role="dialog" aria-modal="true" aria-labelledby="appointment-modal-title" onClick={(event) => event.stopPropagation()}>
             <div className="modal-header">
-                <h2>{editando ? "Editar Agendamento" : "Novo Agendamento"}</h2>
+                <h2 id="appointment-modal-title">{editando ? "Editar Agendamento" : "Novo Agendamento"}</h2>
                 <p>Informe o cliente, serviço e horário do atendimento.</p>
             </div>
             {preparing ? <p>Carregando dados do agendamento...</p> : loadError ? (
@@ -184,15 +184,22 @@ function ModalAgendamento({ onClose, onCreated, agendamento = null, dataInicial 
                     <legend>Serviços</legend>
                     {servicos.map((servico) => {
                         const id = servico.id;
-                        return <label key={id}><input type="checkbox"
-                            aria-label={servico.nome}
-                            checked={selecionados.includes(id)}
-                            onChange={() => {
-                                setSelecionados((current) => current.includes(id)
-                                    ? current.filter((value) => value !== id) : [...current, id]);
-                                setFieldErrors((current) => ({ ...current, servicos: null }));
-                            }} />
-                            {servico.nome}</label>;
+                        return <label className="service-option" key={id}>
+                            <input type="checkbox"
+                                aria-label={servico.nome}
+                                checked={selecionados.includes(id)}
+                                onChange={() => {
+                                    setSelecionados((current) => current.includes(id)
+                                        ? current.filter((value) => value !== id) : [...current, id]);
+                                    setFieldErrors((current) => ({ ...current, servicos: null }));
+                                }} />
+                            <span
+                                className="service-color-indicator"
+                                aria-hidden="true"
+                                style={{ "--service-color": /^#[0-9A-Fa-f]{3,8}$/.test(servico.cor || "") ? servico.cor : "var(--color-border-strong)" }}
+                            />
+                            <span>{servico.nome}</span>
+                        </label>;
                     })}
                 </fieldset>
                 {fieldErrors.servicos && <p className="field-error" role="alert">{fieldErrors.servicos}</p>}
