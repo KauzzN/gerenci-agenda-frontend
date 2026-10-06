@@ -4,6 +4,7 @@ import toast from "react-hot-toast";
 import { ExternalLink, LayoutDashboard } from "lucide-react";
 import { useEffect, useState } from "react";
 import { buscarProfile } from "../../services/agendamento";
+import { construirLinkPublico } from "../../utils/publicLink";
 
 function Header () {
     const {user} = useAuth();
@@ -22,7 +23,7 @@ function Header () {
         buscarProfile()
             .then((profile) => {
                 if (profile?.public_slug) {
-                    setPublicLink(`https://gerenci-agenda-frontend-cif7.vercel.app/book/${profile.public_slug}`);
+                    setPublicLink(construirLinkPublico(profile.public_slug));
                 }
             })
             .catch(() => setPublicLink(""));

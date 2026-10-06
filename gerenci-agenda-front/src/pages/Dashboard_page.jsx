@@ -19,6 +19,7 @@ import ModalSlug from "../components/ModalSlug/ModalSlug";
 import ModalServico from "../components/ModalServico/ModalServico";
 import "../components/PanelLayout/PanelLayout.css";
 import PanelNavigation from "../components/PanelNavigation/PanelNavigation";
+import { construirLinkPublico } from "../utils/publicLink";
 
 function dataLocalAtual() {
     const data = new Date();
@@ -52,9 +53,7 @@ function Dashboard () {
     const [profileErrorType, setProfileErrorType] = useState(null);
     const [initialLoading, setInitialLoading] = useState(true);
     
-    const link = profile?.public_slug
-        ? `https://gerenci-agenda-frontend-cif7.vercel.app/book/${profile.public_slug}`
-        : "";
+    const link = construirLinkPublico(profile?.public_slug);
 
     const [agendamentoSelecionado, setAgendamentoSelecionado] = useState(null);
     const [cancelingId, setCancelingId] = useState(null);

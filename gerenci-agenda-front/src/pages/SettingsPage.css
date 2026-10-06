@@ -18,6 +18,8 @@
 .save-feedback.error { color: var(--danger); }
 .settings-state { color: var(--text-secondary); }
 .settings-state button { background: var(--primary); border: 0; border-radius: 8px; color: #fff; margin-top: 10px; padding: 9px 14px; }
+.settings-account { border-top: 1px solid var(--border); margin-top: 24px; padding-top: 18px; }
+.settings-account button { background: transparent; border: 1px solid var(--border); border-radius: 8px; color: var(--text-primary); padding: 9px 14px; }
 @media (min-width: 640px) {
   .weekday-grid, .time-grid { grid-template-columns: repeat(2, 1fr); }
 }

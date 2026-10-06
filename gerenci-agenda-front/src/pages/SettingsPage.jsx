@@ -1,7 +1,10 @@
 import { useEffect, useRef, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import PanelLayout from "../components/PanelLayout/PanelLayout";
 import { atualizarProfile, buscarProfile } from "../services/agendamento";
+import { logout } from "../services/auth";
+import { construirLinkPublico } from "../utils/publicLink";
 import "./SettingsPage.css";
 
 const emptyProfile = {
@@ -28,6 +31,7 @@ function normalizarHorario(horario) {
 }
 
 function SettingsPage() {
+    const navigate = useNavigate();
     const [profile, setProfile] = useState(emptyProfile);
     const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);
@@ -35,9 +39,7 @@ function SettingsPage() {
     const [saveState, setSaveState] = useState(null);
     const [loadError, setLoadError] = useState("");
     const savingRef = useRef(false);
-    const publicLink = profile.public_slug
-        ? `${window.location.origin}/book/${profile.public_slug}`
-        : "";
+    const publicLink = construirLinkPublico(profile.public_slug);
 
     useEffect(() => {
         async function loadProfile() {
@@ -87,6 +89,11 @@ function SettingsPage() {
         navigator.clipboard.writeText(publicLink)
             .then(() => toast.success("Link copiado."))
             .catch(() => toast.error("Não foi possível copiar o link."));
+    }
+
+    function handleLogout() {
+        logout();
+        navigate("/");
     }
 
     function validate() {
@@ -210,6 +217,10 @@ function SettingsPage() {
                         {saveState === "success" && <span className="save-feedback success" role="status">Alterações salvas.</span>}
                         {saveState === "error" && <span className="save-feedback error" role="alert">Revise os campos destacados.</span>}
                     </div>
+                    <section className="settings-account" aria-labelledby="account-heading">
+                        <h3 id="account-heading">Conta</h3>
+                        <button type="button" onClick={handleLogout}>Sair</button>
+                    </section>
                 </form>
             )}
         </PanelLayout>
