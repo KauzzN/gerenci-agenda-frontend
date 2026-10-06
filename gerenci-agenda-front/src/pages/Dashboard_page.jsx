@@ -237,6 +237,7 @@ function Dashboard () {
                 </section>
 
                 <div className="public-link-button">
+                    <p className="eyebrow">Seu Link Público:</p>
                     <button onClick={copiarLink}
                     >
                         <span>{linkLabel}</span>
