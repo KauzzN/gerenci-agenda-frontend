@@ -3,6 +3,12 @@ import toast from "react-hot-toast";
 import PanelLayout from "../components/PanelLayout/PanelLayout";
 import { listarClientes } from "../services/agendamento";
 import "./ClientsPage.css";
+import PageHeader from "../components/ui/PageHeader";
+import SearchField from "../components/ui/SearchField";
+import LoadingState from "../components/ui/LoadingState";
+import ErrorState from "../components/ui/ErrorState";
+import EmptyState from "../components/ui/EmptyState";
+import Button from "../components/ui/Button";
 
 function ClientsPage() {
     const [clients, setClients] = useState([]);
@@ -43,25 +49,15 @@ function ClientsPage() {
 
     return (
         <PanelLayout>
-            <header className="clients-heading">
-                <div>
-                    <p className="eyebrow">Relacionamento</p>
-                    <h2>Clientes</h2>
-                    <p>Consulte os clientes relacionados à sua agenda.</p>
-                </div>
-                <span className="client-count">{clients.length} {clients.length === 1 ? "cliente" : "clientes"}</span>
-            </header>
+            <PageHeader eyebrow="Relacionamento" title="Clientes" description="Consulte os clientes relacionados à sua agenda." count={<span className="client-count">{clients.length} {clients.length === 1 ? "cliente" : "clientes"}</span>} />
             <section className="panel-section">
-                <label className="search-field">
-                    Buscar cliente
-                    <input aria-label="Buscar cliente" placeholder="Buscar por nome ou telefone" value={query} onChange={(event) => setQuery(event.target.value)} />
-                </label>
-                {loading ? <p className="state-message">Carregando clientes...</p> : loadError ? (
-                    <div className="state-message"><p>{loadError}</p><button type="button" onClick={loadClients}>Tentar novamente</button></div>
+                <SearchField label="Buscar cliente" placeholder="Buscar por nome ou telefone" value={query} onChange={(event) => setQuery(event.target.value)} />
+                {loading ? <LoadingState label="Carregando clientes..." /> : loadError ? (
+                    <ErrorState message={loadError} action={<Button onClick={loadClients}>Tentar novamente</Button>} />
                 ) : clients.length === 0 ? (
-                    <p className="state-message">Nenhum cliente relacionado foi encontrado.</p>
+                    <EmptyState title="Nenhum cliente relacionado foi encontrado." />
                 ) : visibleClients.length === 0 ? (
-                    <p className="state-message">Nenhum cliente corresponde à sua busca.</p>
+                    <EmptyState title="Nenhum cliente corresponde à sua busca." />
                 ) : (
                     <ul className="panel-list">
                         {visibleClients.map((client) => (

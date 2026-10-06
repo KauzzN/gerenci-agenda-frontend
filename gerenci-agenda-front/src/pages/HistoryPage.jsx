@@ -4,6 +4,12 @@ import PanelLayout from "../components/PanelLayout/PanelLayout";
 import StatusBadge from "../components/StatusBadge/StatusBadge";
 import { listarHistorico } from "../services/agendamento";
 import "./HistoryPage.css";
+import PageHeader from "../components/ui/PageHeader";
+import SearchField from "../components/ui/SearchField";
+import LoadingState from "../components/ui/LoadingState";
+import ErrorState from "../components/ui/ErrorState";
+import EmptyState from "../components/ui/EmptyState";
+import Button from "../components/ui/Button";
 
 const historyTimeZone = "America/Fortaleza";
 
@@ -84,25 +90,15 @@ function HistoryPage() {
 
     return (
         <PanelLayout>
-            <header className="history-heading">
-                <div>
-                    <p className="eyebrow">Atendimentos anteriores</p>
-                    <h2>Histórico</h2>
-                    <p>Consulte o que aconteceu na sua agenda.</p>
-                </div>
-                {items.length > 0 && <span className="history-count">{items.length} registros</span>}
-            </header>
+            <PageHeader eyebrow="Atendimentos anteriores" title="Histórico" description="Consulte o que aconteceu na sua agenda." count={items.length > 0 && <span className="history-count">{items.length} registros</span>} />
             <section className="panel-section">
-                <label className="history-search">
-                    Buscar cliente ou serviço
-                    <input aria-label="Buscar no histórico" placeholder="Digite um nome ou serviço" value={query} onChange={(event) => setQuery(event.target.value)} />
-                </label>
-                {loading ? <p className="history-state">Carregando histórico...</p> : loadError ? (
-                    <div className="history-state"><p>{loadError}</p><button type="button" onClick={loadHistory}>Tentar novamente</button></div>
+                <SearchField label="Buscar cliente ou serviço" placeholder="Digite um nome ou serviço" value={query} onChange={(event) => setQuery(event.target.value)} />
+                {loading ? <LoadingState label="Carregando histórico..." /> : loadError ? (
+                    <ErrorState message={loadError} action={<Button onClick={loadHistory}>Tentar novamente</Button>} />
                 ) : items.length === 0 ? (
-                    <p className="history-state">Ainda não existem atendimentos no histórico.</p>
+                    <EmptyState title="Ainda não existem atendimentos no histórico." />
                 ) : groups.length === 0 ? (
-                    <p className="history-state">Nenhum registro corresponde à sua busca.</p>
+                    <EmptyState title="Nenhum registro corresponde à sua busca." />
                 ) : (
                     groups.map(([key, group]) => (
                         <section className="history-group" key={key}>

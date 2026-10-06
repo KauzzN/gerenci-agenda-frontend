@@ -3,6 +3,13 @@ import toast from "react-hot-toast";
 import PanelLayout from "../components/PanelLayout/PanelLayout";
 import { atualizarServico, criarServico, listarServicos } from "../services/agendamento";
 import "./ServicesPage.css";
+import PageHeader from "../components/ui/PageHeader";
+import SearchField from "../components/ui/SearchField";
+import LoadingState from "../components/ui/LoadingState";
+import ErrorState from "../components/ui/ErrorState";
+import EmptyState from "../components/ui/EmptyState";
+import Button from "../components/ui/Button";
+import Field from "../components/ui/Field";
 
 const emptyService = {
     nome: "",
@@ -130,15 +137,11 @@ function ServicesPage() {
 
     return (
         <PanelLayout>
-            <header className="services-heading">
-                <div><p className="eyebrow">Catálogo</p><h2>Serviços</h2><p>Gerencie o que seus clientes podem agendar.</p></div>
-                <span className="service-count">{services.length} {services.length === 1 ? "serviço" : "serviços"}</span>
-            </header>
+            <PageHeader eyebrow="Catálogo" title="Serviços" description="Gerencie o que seus clientes podem agendar." count={<span className="service-count">{services.length} {services.length === 1 ? "serviço" : "serviços"}</span>} />
             <section className="panel-section">
                 <h3>{editingId ? "Editar serviço" : "Novo serviço"}</h3>
                 <form className="panel-form service-form" onSubmit={handleSubmit} noValidate>
-                    <input aria-label="Nome" name="nome" placeholder="Nome" value={service.nome} onChange={updateField} />
-                    {fieldErrors.nome && <p className="field-error" role="alert">{fieldErrors.nome}</p>}
+                    <Field id="service-name" label="Nome" name="nome" placeholder="Nome" value={service.nome} onChange={updateField} error={fieldErrors.nome} />
                     <input aria-label="Preço" name="preco" placeholder="Preço" inputMode="decimal" value={service.preco} onChange={updateField} />
                     {fieldErrors.preco && <p className="field-error" role="alert">{fieldErrors.preco}</p>}
                     <input aria-label="Duração em minutos" name="duracao" placeholder="Duração em minutos" inputMode="numeric" value={service.duracao} onChange={updateField} />
@@ -156,13 +159,13 @@ function ServicesPage() {
             </section>
             <section className="panel-section">
                 <h3>Serviços cadastrados</h3>
-                <label className="search-field">Buscar serviço<input aria-label="Buscar serviço" placeholder="Buscar por nome" value={query} onChange={(event) => setQuery(event.target.value)} /></label>
-                {loading ? <p className="state-message">Carregando serviços...</p> : loadError ? (
-                    <div className="state-message"><p>{loadError}</p><button type="button" onClick={loadServices}>Tentar novamente</button></div>
+                <SearchField label="Buscar serviço" placeholder="Buscar por nome" value={query} onChange={(event) => setQuery(event.target.value)} />
+                {loading ? <LoadingState label="Carregando serviços..." /> : loadError ? (
+                    <ErrorState message={loadError} action={<Button onClick={loadServices}>Tentar novamente</Button>} />
                 ) : services.length === 0 ? (
-                    <p>Você ainda não possui serviços cadastrados.</p>
+                    <EmptyState title="Você ainda não possui serviços cadastrados." />
                 ) : visibleServices.length === 0 ? (
-                    <p className="state-message">Nenhum serviço corresponde à sua busca.</p>
+                    <EmptyState title="Nenhum serviço corresponde à sua busca." />
                 ) : (
                     <ul className="panel-list">
                         {visibleServices.map((item) => (
