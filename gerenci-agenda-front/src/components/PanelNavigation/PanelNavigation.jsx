@@ -1,4 +1,4 @@
-import { History, LayoutDashboard, Settings, Users, Wrench } from "lucide-react";
+import { History, LayoutDashboard, LogOut, Settings, Users, Wrench } from "lucide-react";
 import { NavLink } from "react-router-dom";
 import "./PanelNavigation.css";
 
@@ -10,7 +10,7 @@ const links = [
     { to: "/configuracoes", label: "Ajustes", icon: Settings }
 ];
 
-function PanelNavigation() {
+function PanelNavigation({ onLogout }) {
     return (
         <nav className="panel-navigation" aria-label="Navegação do painel">
             {links.map(({ to, label, icon: Icon }) => (
@@ -19,6 +19,7 @@ function PanelNavigation() {
                     <span>{label}</span>
                 </NavLink>
             ))}
+            {onLogout && <button type="button" className="panel-logout" onClick={onLogout}><LogOut aria-hidden="true" size={20} /><span>Sair</span></button>}
         </nav>
     );
 }

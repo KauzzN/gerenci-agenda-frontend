@@ -11,7 +11,6 @@ import AppointmentList from "../components/AppointmentList/AppointmentList";
 import FloatingButton from "../components/FloatingButton/FloatingButton";
 import "./Dashboard_page.css"
 import ModalAgendamento from "../components/ModalAgendamento/ModalAgendamento";
-import { logout } from "../services/auth";
 import DashboardStats from "../components/DashboardStats/DashboardStats";
 import NextAppointment from "../components/NextAppointment/NextAppointment";
 import { CopyIcon, Link, Plus, Users, Wrench, Settings } from "lucide-react";
@@ -144,13 +143,6 @@ function Dashboard () {
     }
 
 
-    // Função fazer logout
-    function logoff () {
-        logout()
-        navigate("/")
-        
-    }
-
 
     // Função agrupar agendamentos por dia
     // Função editar agendamentos
@@ -220,29 +212,13 @@ function Dashboard () {
     return (
         <div className="dashboard">
             
-            <Header onLogout={logoff}/>
+            <Header />
 
             <PanelNavigation />
 
             <div className="dashboard-divider"/>
 
             <div className="public-link-box">
-
-                <section className="dashboard-welcome">
-                    <div>
-                        <p className="eyebrow">Visão operacional</p>
-                        <h2>Agenda de hoje</h2>
-                        <p className="dashboard-muted">Acompanhe seus atendimentos e acesse as tarefas mais usadas.</p>
-                    </div>
-                </section>
-
-                {profileChecked && Array.isArray(profile?.dias_funcionando) && profile.dias_funcionando.length === 0 && (
-                    <div className="dashboard-notice" role="status">
-                        <strong>Configure seus dias de funcionamento</strong>
-                        <span>Seu calendário público ainda não tem dias disponíveis.</span>
-                        <button type="button" onClick={() => navigate("/configuracoes")}>Abrir Ajustes</button>
-                    </div>
-                )}
 
                 <section className="dashboard-welcome">
                     <div>
@@ -259,14 +235,6 @@ function Dashboard () {
                         <button type="button" onClick={() => navigate("/configuracoes")}><Settings size={18} /> Ajustes</button>
                     </div>
                 </section>
-
-                {profileChecked && Array.isArray(profile?.dias_funcionando) && profile.dias_funcionando.length === 0 && (
-                    <div className="dashboard-notice" role="status">
-                        <strong>Configure seus dias de funcionamento</strong>
-                        <span>Seu calendário público ainda não tem dias disponíveis.</span>
-                        <button type="button" onClick={() => navigate("/configuracoes")}>Abrir Ajustes</button>
-                    </div>
-                )}
 
                 <div className="public-link-button">
                     <button onClick={copiarLink}

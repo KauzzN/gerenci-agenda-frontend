@@ -14,8 +14,8 @@ function PanelLayout({ children }) {
 
     return (
         <div className="panel-page">
-            <Header onLogout={handleLogout} />
-            <PanelNavigation />
+            <Header />
+            <PanelNavigation onLogout={handleLogout} />
             <main className="panel-content">{children}</main>
         </div>
     );

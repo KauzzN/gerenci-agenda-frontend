@@ -1,18 +1,13 @@
 import "./Header.css"
 import { useAuth } from "../../hooks/useAuth.js";
-import { useState } from "react";
 import toast from "react-hot-toast";
-import { 
-    CalendarDays, Home, LogOut, LayoutDashboard,
-    Copy,
-    CopyIcon
-} from "lucide-react";
-import { useEffect } from "react";
+import { ExternalLink, LayoutDashboard } from "lucide-react";
+import { useEffect, useState } from "react";
+import { buscarProfile } from "../../services/agendamento";
 
-function Header ({ onLogout }) {
-
-
+function Header () {
     const {user} = useAuth();
+    const [publicLink, setPublicLink] = useState("");
 
     function saudacao() {
         const hora = new Date().getHours()
@@ -23,14 +18,22 @@ function Header ({ onLogout }) {
         return "Boa noite"
     }
 
-    function formatarDataAtual() {
-        const data = new Date();
+    useEffect(() => {
+        buscarProfile()
+            .then((profile) => {
+                if (profile?.public_slug) {
+                    setPublicLink(`https://gerenci-agenda-frontend-cif7.vercel.app/book/${profile.public_slug}`);
+                }
+            })
+            .catch(() => setPublicLink(""));
+    }, []);
 
-        return data.toLocaleDateString("pt-BR", {
-            weekday: "long",
-            day: "numeric",
-            month: "long"
-        });
+    function abrirPerfilPublico() {
+        if (!publicLink) {
+            toast.error("Configure seu link público em Ajustes.");
+            return;
+        }
+        window.open(publicLink, "_blank", "noopener,noreferrer");
     }
 
     return (
@@ -41,23 +44,11 @@ function Header ({ onLogout }) {
                 </h1>
 
                 <small>Aqui está o resumo do seu dia.</small>
-
             </div>
-
-            <div className="header-second-container">
-
-                <CalendarDays size={18}/><span>{formatarDataAtual()}</span>
-
-                <div className="header-divider"/>
-
-                <button 
-                    className="logout-button"
-                    onClick={onLogout}    
-                    >
-                    <LogOut size={18}/> 
-                    Sair
-                </button>
-            </div>
+            <button type="button" className="public-profile-link" onClick={abrirPerfilPublico}>
+                <ExternalLink size={17} aria-hidden="true" />
+                Ver perfil público
+            </button>
         </header>
     );
 }

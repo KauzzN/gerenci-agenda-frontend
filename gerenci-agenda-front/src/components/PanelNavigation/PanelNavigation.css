@@ -17,6 +17,17 @@
     white-space: nowrap;
 }
 
+.panel-logout {
+    align-items: center;
+    background: transparent;
+    border: 0;
+    color: var(--text-secondary);
+    cursor: pointer;
+    display: flex;
+    gap: 8px;
+    padding: 10px 14px;
+}
+
 .panel-navigation a.active {
     border-color: var(--primary);
     color: var(--text-primary);
