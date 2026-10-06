@@ -1,34 +1,83 @@
 :root {
-    /* Backgrounds */
+    /* Semantic colors */
+    --color-bg-canvas: #111827;
+    --color-bg-surface: #1f2937;
+    --color-bg-surface-raised: #293548;
+    --color-bg-hover: #293548;
 
-    --bg-primary: #111827;
-    --bg-secondary: #1f2937;
-    --bg-hover: #293548;
+    --color-text-primary: #f9fafb;
+    --color-text-secondary: #9ca3af;
+    --color-text-muted: #6b7280;
 
-    /* Borders */
+    --color-border-subtle: rgb(55 65 81 / 45%);
+    --color-border-strong: #4b5563;
 
-    --border: #37415172;
+    --color-primary: #2563eb;
+    --color-primary-hover: #1d4ed8;
+    --color-primary-soft: rgb(37 99 235 / 18%);
 
-    /* Text */
+    --color-success: #22c55e;
+    --color-warning: #f59e0b;
+    --color-danger: #ef4444;
+    --color-focus: #60a5fa;
 
-    --text-primary: #f9fafb;
-    --text-secondary: #9ca3af;
+    /* Typography */
+    --font-display: "Archive Bold", Inter, sans-serif;
+    --font-body: Inter, sans-serif;
+    --text-display: clamp(2rem, 4vw, 2.5rem);
+    --text-h1: clamp(1.75rem, 3vw, 2rem);
+    --text-h2: 1.5rem;
+    --text-h3: 1.125rem;
+    --text-body: 1rem;
+    --text-small: .875rem;
+    --text-caption: .75rem;
 
-    /* Brand */
+    /* Spacing */
+    --space-1: 4px;
+    --space-2: 8px;
+    --space-3: 12px;
+    --space-4: 16px;
+    --space-5: 20px;
+    --space-6: 24px;
+    --space-8: 32px;
+    --space-10: 40px;
 
-    --primary: #3b92f6;
-    --primary-hover: #2563eb;
+    /* Radius */
+    --radius-sm: 8px;
+    --radius-md: 12px;
+    --radius-lg: 16px;
+    --radius-xl: 20px;
+    --radius-pill: 999px;
 
-    /* Status */
+    /* Elevation */
+    --shadow-sm: 0 4px 12px rgb(0 0 0 / 12%);
+    --shadow-md: 0 8px 20px rgb(0 0 0 / 18%);
+    --shadow-lg: 0 16px 40px rgb(0 0 0 / 25%);
 
-    --normal: #3b82f6;
-    --success: #22c55e;
-    --warning: #f59e0b;
-    --danger: #ef4444;
+    /* Optional translucent surfaces */
+    --glass-bg: rgb(31 41 55 / 78%);
+    --glass-border: rgb(156 163 175 / 18%);
+    --glass-blur: 14px;
 
-    /* Extras*/
+    /* Initial responsive strategy */
+    --breakpoint-mobile: 480px;
+    --breakpoint-tablet: 768px;
+    --breakpoint-desktop: 1024px;
+    --breakpoint-wide: 1280px;
 
-    --shadow: 0 8px 20px rgba(0,0,0,.25);
-
-    --radius: 14px;
+    /* Backward-compatible aliases */
+    --bg-primary: var(--color-bg-canvas);
+    --bg-secondary: var(--color-bg-surface);
+    --bg-hover: var(--color-bg-hover);
+    --border: var(--color-border-subtle);
+    --text-primary: var(--color-text-primary);
+    --text-secondary: var(--color-text-secondary);
+    --primary: var(--color-primary);
+    --primary-hover: var(--color-primary-hover);
+    --normal: var(--color-primary);
+    --success: var(--color-success);
+    --warning: var(--color-warning);
+    --danger: var(--color-danger);
+    --shadow: var(--shadow-md);
+    --radius: var(--radius-lg);
 }
