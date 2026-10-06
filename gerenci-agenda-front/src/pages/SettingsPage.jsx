@@ -2,6 +2,8 @@ import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import PanelLayout from "../components/PanelLayout/PanelLayout";
+import PageHeader from "../components/ui/PageHeader";
+import Surface from "../components/ui/Surface";
 import { atualizarProfile, buscarProfile } from "../services/agendamento";
 import { logout } from "../services/auth";
 import { construirLinkPublico } from "../utils/publicLink";
@@ -162,25 +164,47 @@ function SettingsPage() {
 
     return (
         <PanelLayout>
-            <h2>Configurações</h2>
+            <div className="settings-page">
+                <PageHeader
+                    eyebrow="Preferências"
+                    title="Configurações"
+                    description="Controle como sua agenda funciona."
+                />
             {loading ? <p>Carregando configurações...</p> : loadError ? (
-                <section className="panel-section settings-state" role="alert">
+                <Surface className="settings-state" role="alert">
                     <p>{loadError}</p>
                     <button type="button" onClick={() => window.location.reload()}>Tentar novamente</button>
-                </section>
+                </Surface>
             ) : (
-                <form className="panel-section panel-form" onSubmit={handleSubmit}>
-                    <h3>Perfil do negócio</h3>
-                    <input name="nome_negocio" placeholder="Nome do negócio" value={profile.nome_negocio} onChange={updateField} />
-                    <input aria-label="Slug público" name="public_slug" placeholder="Slug público" value={profile.public_slug || ""} onChange={updateField} />
-                    {fieldErrors.public_slug && <p className="field-error" role="alert">{fieldErrors.public_slug}</p>}
-                    <input name="telefone" placeholder="Telefone" value={profile.telefone || ""} onChange={updateField} />
-                    <input name="endereco" placeholder="Endereço" value={profile.endereco || ""} onChange={updateField} />
-                    <input name="instagram" placeholder="Instagram" value={profile.instagram || ""} onChange={updateField} />
-                    <label>Descrição<textarea name="descricao" placeholder="Conte um pouco sobre o negócio." value={profile.descricao || ""} onChange={updateField} /></label>
+                <form className="settings-form" onSubmit={handleSubmit}>
+                    <Surface className="settings-section">
+                        <div className="settings-section-heading">
+                            <div>
+                                <h3>Perfil do negócio</h3>
+                                <p>As informações que seus clientes encontram no seu perfil.</p>
+                            </div>
+                        </div>
+                        <div className="settings-fields">
+                            <input name="nome_negocio" placeholder="Nome do negócio" value={profile.nome_negocio} onChange={updateField} />
+                            <div>
+                                <input aria-label="Slug público" name="public_slug" placeholder="Slug público" value={profile.public_slug || ""} onChange={updateField} />
+                                {fieldErrors.public_slug && <p className="field-error" role="alert">{fieldErrors.public_slug}</p>}
+                            </div>
+                            <input name="telefone" placeholder="Telefone" value={profile.telefone || ""} onChange={updateField} />
+                            <input name="endereco" placeholder="Endereço" value={profile.endereco || ""} onChange={updateField} />
+                            <input name="instagram" placeholder="Instagram" value={profile.instagram || ""} onChange={updateField} />
+                            <label>Descrição<textarea name="descricao" placeholder="Conte um pouco sobre o negócio." value={profile.descricao || ""} onChange={updateField} /></label>
+                        </div>
+                    </Surface>
 
-                    <section className="settings-hours" aria-labelledby="hours-heading">
-                        <h3 id="hours-heading">Dias de funcionamento</h3>
+                    <Surface className="settings-section settings-hours" aria-labelledby="hours-heading">
+                        <div className="settings-section-heading">
+                            <div>
+                                <h3 id="hours-heading">Funcionamento</h3>
+                                <p>Defina quando sua agenda estará disponível para atendimento.</p>
+                            </div>
+                        </div>
+                        <h4>Dias de funcionamento</h4>
                         <p className="settings-hint">Selecione os dias em que você atende.</p>
                         <div className="weekday-grid">
                             {weekdays.map(([value, label]) => {
@@ -199,30 +223,37 @@ function SettingsPage() {
                             <label>Início do intervalo<input aria-label="Início do almoço" name="inicio_almoco" type="time" disabled={!profile.dias_funcionando?.length} value={profile.inicio_almoco || ""} onChange={updateField} />{fieldErrors.inicio_almoco && <span className="field-error">{fieldErrors.inicio_almoco}</span>}</label>
                             <label>Fim do intervalo<input aria-label="Fim do almoço" name="fim_almoco" type="time" disabled={!profile.dias_funcionando?.length} value={profile.fim_almoco || ""} onChange={updateField} />{fieldErrors.fim_almoco && <span className="field-error">{fieldErrors.fim_almoco}</span>}</label>
                         </div>
-                    </section>
+                    </Surface>
 
                     {publicLink && (
-                        <div>
-                            <h3>Sua página pública</h3>
-                            <p>{publicLink}</p>
+                        <Surface className="settings-section public-link-section">
+                            <div className="settings-section-heading">
+                                <div>
+                                    <h3>Perfil público</h3>
+                                    <p>Este é o link que seus clientes usam para agendar.</p>
+                                </div>
+                            </div>
+                            <p className="public-link-value">{publicLink}</p>
                             <div className="panel-actions">
-                                <a href={publicLink} target="_blank" rel="noreferrer">Abrir página</a>
+                                <a href={publicLink} target="_blank" rel="noreferrer">Abrir link público</a>
                                 <button type="button" onClick={copiarLink}>Copiar link</button>
                             </div>
-                        </div>
+                        </Surface>
                     )}
 
-                    <div className="panel-actions">
+                    <div className="settings-submit panel-actions">
                         <button type="submit" disabled={saving}>{saving ? "Salvando..." : "Salvar alterações"}</button>
                         {saveState === "success" && <span className="save-feedback success" role="status">Alterações salvas.</span>}
                         {saveState === "error" && <span className="save-feedback error" role="alert">Revise os campos destacados.</span>}
                     </div>
-                    <section className="settings-account" aria-labelledby="account-heading">
+                    <Surface className="settings-account" aria-labelledby="account-heading">
                         <h3 id="account-heading">Conta</h3>
+                        <p>Encerre sua sessão neste dispositivo.</p>
                         <button type="button" onClick={handleLogout}>Sair</button>
-                    </section>
+                    </Surface>
                 </form>
             )}
+            </div>
         </PanelLayout>
     );
 }
