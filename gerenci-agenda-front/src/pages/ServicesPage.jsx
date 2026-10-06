@@ -62,6 +62,8 @@ function ServicesPage() {
         const nextFieldErrors = {};
 
         if (!payload.nome) nextFieldErrors.nome = "Informe o nome do serviço.";
+        if (payload.descricao.length > 200) nextFieldErrors.descricao = "A descrição deve ter no máximo 200 caracteres.";
+        if (!/^#[0-9A-Fa-f]{3,6}$/.test(payload.cor)) nextFieldErrors.cor = "Informe uma cor hexadecimal válida.";
         if (!Number.isFinite(Number(service.preco)) || Number(service.preco) < 0) {
             nextFieldErrors.preco = "Informe um preço válido.";
         }
@@ -142,7 +144,9 @@ function ServicesPage() {
                     <input aria-label="Duração em minutos" name="duracao" placeholder="Duração em minutos" inputMode="numeric" value={service.duracao} onChange={updateField} />
                     {fieldErrors.duracao && <p className="field-error" role="alert">{fieldErrors.duracao}</p>}
                     <label className="service-wide">Descrição (opcional)<textarea name="descricao" placeholder="Adicione detalhes para sua equipe." value={service.descricao} onChange={updateField} /></label>
+                    {fieldErrors.descricao && <p className="field-error" role="alert">{fieldErrors.descricao}</p>}
                     <input aria-label="Cor do serviço" name="cor" type="color" value={service.cor} onChange={updateField} />
+                    {fieldErrors.cor && <p className="field-error" role="alert">{fieldErrors.cor}</p>}
                     {editingId && typeof service.ativo === "boolean" && <label><input name="ativo" type="checkbox" checked={service.ativo} onChange={updateField} /> Serviço ativo</label>}
                     <div className="panel-actions">
                         {editingId && <button type="button" onClick={() => { setEditingId(null); setService(emptyService); }}>Cancelar edição</button>}
@@ -165,7 +169,7 @@ function ServicesPage() {
                             <li key={item.id}>
                                 <div>
                                     <strong>{item.nome}</strong>
-                                    <p>R$ {item.preco} • {item.duracao} min {typeof item.ativo === "boolean" && `• ${item.ativo ? "Ativo" : "Inativo"}`}</p>
+                                    <p>R$ {Number(item.preco).toFixed(2).replace(".", ",")} • {item.duracao} min {typeof item.ativo === "boolean" && `• ${item.ativo ? "Ativo" : "Inativo"}`}</p>
                                 </div>
                                 <button type="button" onClick={() => editService(item)}>Editar</button>
                             </li>

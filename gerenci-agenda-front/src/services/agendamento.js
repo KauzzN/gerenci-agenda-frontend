@@ -33,7 +33,7 @@ export async function listarServicos() {
 export async function criarServico({ nome, preco, duracao, descricao, cor }) {
     const response = await api.post("/serv/create", {
         nome,
-        preco,
+        preco: normalizarPrecoServico(preco),
         duracao,
         descricao,
         cor
@@ -45,7 +45,7 @@ export async function criarServico({ nome, preco, duracao, descricao, cor }) {
 export async function atualizarServico(id, { nome, preco, duracao, descricao, cor, ativo }) {
     const response = await api.patch(`/serv/update/${id}`, {
         nome,
-        preco,
+        preco: normalizarPrecoServico(preco),
         duracao,
         descricao,
         cor,
@@ -53,6 +53,12 @@ export async function atualizarServico(id, { nome, preco, duracao, descricao, co
     });
 
     return response.data?.servico;
+}
+
+export function normalizarPrecoServico(value) {
+    const normalized = String(value).trim().replace(",", ".");
+    const numericValue = Number(normalized);
+    return Number.isFinite(numericValue) ? numericValue.toFixed(2) : normalized;
 }
 
 export async function listarClientes() {
