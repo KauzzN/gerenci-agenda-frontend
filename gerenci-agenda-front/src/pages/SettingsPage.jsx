@@ -142,8 +142,11 @@ function SettingsPage() {
             setSaving(true);
             setFieldErrors({});
             setSaveState(null);
+            const clearableFields = new Set(["endereco", "instagram", "descricao"]);
             const payload = Object.fromEntries(
-                Object.entries(profile).filter(([, value]) => value !== "")
+                Object.entries(profile).filter(([key, value]) => (
+                    value !== "" || clearableFields.has(key)
+                ))
             );
             const response = await atualizarProfile(payload);
             setProfile((current) => ({ ...current, ...response.profile }));
