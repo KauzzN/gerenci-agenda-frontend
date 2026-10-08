@@ -5,7 +5,7 @@ import PanelLayout from "../components/PanelLayout/PanelLayout";
 import PageHeader from "../components/ui/PageHeader";
 import Surface from "../components/ui/Surface";
 import { atualizarProfile, buscarProfile } from "../services/agendamento";
-import { logout } from "../services/auth";
+import { useAuth } from "../hooks/useAuth";
 import { construirLinkPublico } from "../utils/publicLink";
 import "./SettingsPage.css";
 
@@ -34,6 +34,7 @@ function normalizarHorario(horario) {
 
 function SettingsPage() {
     const navigate = useNavigate();
+    const { logout } = useAuth();
     const [profile, setProfile] = useState(emptyProfile);
     const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);
