@@ -63,8 +63,8 @@
     display: inline-flex;
     flex-shrink: 0;
     justify-content: center;
-    min-height: 40px;
-    min-width: 40px;
+    min-height: 44px;
+    min-width: 44px;
 }
 
 .modal-close-button:hover,
