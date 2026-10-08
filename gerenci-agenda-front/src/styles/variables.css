@@ -54,6 +54,12 @@
     --shadow-md: 0 8px 20px rgb(0 0 0 / 18%);
     --shadow-lg: 0 16px 40px rgb(0 0 0 / 25%);
 
+    /* Motion */
+    --motion-fast: 120ms;
+    --motion-normal: 180ms;
+    --motion-slow: 240ms;
+    --motion-ease-out: ease-out;
+
     /* Optional translucent surfaces */
     --glass-bg: rgb(31 41 55 / 78%);
     --glass-border: rgb(156 163 175 / 18%);

@@ -16,6 +16,7 @@
     min-height: 44px;
     padding: var(--space-3);
     text-decoration: none;
+    transition: background-color var(--motion-fast) var(--motion-ease-out), border-color var(--motion-fast) var(--motion-ease-out), color var(--motion-fast) var(--motion-ease-out);
     white-space: nowrap;
 }
 
