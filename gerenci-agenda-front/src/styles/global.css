@@ -26,6 +26,12 @@ textarea {
     font: inherit;
 }
 
+input,
+select,
+textarea {
+    font-size: var(--text-body);
+}
+
 img,
 svg {
     max-width: 100%;

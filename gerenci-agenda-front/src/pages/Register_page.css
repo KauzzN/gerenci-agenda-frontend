@@ -87,7 +87,7 @@
     background: var(--bg-primary);
 
     color: white;
-    font-size: 0.90rem;
+    font-size: var(--text-body);
 
     border: 1px solid var(--border);
     border-radius: 10px;
