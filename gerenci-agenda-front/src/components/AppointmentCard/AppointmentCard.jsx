@@ -9,12 +9,19 @@ function AppointmentCard({ agendamento, onEdit, onCancel, canceling }) {
     const visibleServices = services.slice(0, 3)
     const visibleServiceNames = serviceNames.slice(0, 3)
     const additionalServiceCount = Math.max(serviceNames.length - visibleServiceNames.length, 0)
-    const serviceColor = services.find((service) => /^#[0-9A-Fa-f]{3,8}$/.test(service?.cor || ""))?.cor
+    const statusColor = {
+        PENDENTE: "var(--color-warning)",
+        ATENDIDO: "var(--color-success)",
+        FALTOU: "var(--color-danger)",
+        CANCELADO: "var(--color-border-strong)"
+    }[agendamento.status] || "var(--color-border-strong)"
 
     return (
         <div 
             className="card-container"
-            style={{ "--service-color": serviceColor || "var(--color-border-strong)" }}
+            style={{
+                "--status-color": statusColor
+            }}
             role="button"
             tabIndex="0"
             onClick={() => {

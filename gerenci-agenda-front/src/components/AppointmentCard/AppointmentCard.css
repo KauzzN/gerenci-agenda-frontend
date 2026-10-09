@@ -13,7 +13,7 @@
 }
 
 .card-container::before {
-    background: var(--service-color);
+    background: var(--status-color);
     content: "";
     inset: 0 auto 0 0;
     position: absolute;

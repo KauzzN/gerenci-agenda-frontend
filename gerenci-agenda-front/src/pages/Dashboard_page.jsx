@@ -235,22 +235,6 @@ function Dashboard () {
                     </div>
                 </section>
 
-                <section className="dashboard-welcome">
-                    <div>
-                        <p className="eyebrow">Visão operacional</p>
-                        <h2>Agenda de hoje</h2>
-                        <p className="dashboard-muted">Acompanhe seus atendimentos e acesse as tarefas mais usadas.</p>
-                    </div>
-                    <div className="quick-actions" aria-label="Ações rápidas">
-                        <button type="button" onClick={() => { setAgendamentoSelecionado(null); setOpenModal(true); }}>
-                            <Plus size={18} /> Novo agendamento
-                        </button>
-                        <button type="button" onClick={() => navigate("/clientes")}><Users size={18} /> Clientes</button>
-                        <button type="button" onClick={() => navigate("/servicos")}><Wrench size={18} /> Serviços</button>
-                        <button type="button" onClick={() => navigate("/configuracoes")}><Settings size={18} /> Ajustes</button>
-                    </div>
-                </section>
-
                 {profileChecked && Array.isArray(profile?.dias_funcionando) && profile.dias_funcionando.length === 0 && (
                     <div className="dashboard-notice" role="status">
                         <strong>Configure seus dias de funcionamento</strong>
@@ -303,6 +287,9 @@ function Dashboard () {
 
 
             <main className="dashboard-content">
+                <aside className="dashboard-side">
+                    <NextAppointment stats={dashboardStats} />
+                </aside>
 
                 <div className="dashboard-main">
                     <AppointmentList 
@@ -319,9 +306,6 @@ function Dashboard () {
                     
                 </div>
                 
-                <aside className="dashboard-side">
-                    <NextAppointment stats={dashboardStats} />
-                </aside>
 
             </main>
 
