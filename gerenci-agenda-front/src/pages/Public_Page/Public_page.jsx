@@ -12,6 +12,7 @@ import {
 import { useClientAuth } from "../../contexts/ClientAuthContext";
 import toast from "react-hot-toast";
 import { Calendar, ClipboardList, Clock3, User, ChevronDown, CheckCircle2, X } from "lucide-react";
+import { getUpcomingWorkingDates, isConfiguredWorkingDate } from "../../utils/bookingDates";
 
 function PublicPage() {
 
@@ -44,6 +45,7 @@ function PublicPage() {
     const [profileExpanded, setProfileExpanded] = useState(false);
     const [step, setStep] = useState(0);
     const [fieldErrors, setFieldErrors] = useState({});
+    const [dateSelectionError, setDateSelectionError] = useState("");
     const bookingRef = useRef(false);
     const availabilityRequestRef = useRef(0);
 
@@ -192,6 +194,12 @@ function PublicPage() {
         carregarProfile();
     }, [slug]);
 
+    useEffect(() => {
+        if (!profile || isConfiguredWorkingDate(data, profile.dias_funcionando)) return;
+        const nextWorkingDate = getUpcomingWorkingDates(dataInicial, profile.dias_funcionando, 1)[0];
+        if (nextWorkingDate) setData(nextWorkingDate);
+    }, [profile, data, dataInicial]);
+
     useEffect(()=>{
 
         carregarHorarios();
@@ -208,25 +216,15 @@ function PublicPage() {
         morning: horarios.filter(({ horario }) => Number(horario?.slice(0, 2)) < 12),
         afternoon: horarios.filter(({ horario }) => Number(horario?.slice(0, 2)) >= 12)
     };
-    const dayNames = ["domingo", "segunda", "terca", "quarta", "quinta", "sexta", "sabado"];
-    function isWorkingDate(date) {
-        const configuredDays = Array.isArray(profile?.dias_funcionando) ? profile.dias_funcionando : [];
-        const weekday = new Date(`${date}T12:00:00`).getDay();
-        return configuredDays.some((configuredDay) => {
-            if (typeof configuredDay === "number") return configuredDay === (weekday === 0 ? 6 : weekday - 1);
-            if (typeof configuredDay !== "string") return false;
-            const normalized = configuredDay.trim().toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-            return normalized === dayNames[weekday] || normalized === `${dayNames[weekday]}-feira`;
-        });
-    }
-    const shortDates = Array.from({ length: 5 }, (_, index) => {
-        const date = new Date(`${dataInicial}T12:00:00`);
-        date.setDate(date.getDate() + index);
-        return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`;
-    }).filter(isWorkingDate);
+    const shortDates = getUpcomingWorkingDates(data, profile?.dias_funcionando, 5);
     const profileDetails = ["endereco", "telefone", "instagram", "descricao"].filter((key) => profile?.[key]);
     function handleDateChange(event) {
-        if (isWorkingDate(event.target.value)) setData(event.target.value);
+        if (isConfiguredWorkingDate(event.target.value, profile?.dias_funcionando)) {
+            setData(event.target.value);
+            setDateSelectionError("");
+        } else {
+            setDateSelectionError("Este profissional não atende nessa data. Escolha um dos dias disponíveis.");
+        }
     }
 
     return (
@@ -246,12 +244,14 @@ function PublicPage() {
                             <label className="field-label" htmlFor="booking-date">Data</label>
                             <div className="date-strip" aria-label="Datas próximas">
                                 {shortDates.map((date) => (
-                                    <button type="button" key={date} className={date === data ? "date-chip selected" : "date-chip"} onClick={() => setData(date)}>
+                                    <button type="button" key={date} className={date === data ? "date-chip selected" : "date-chip"} onClick={() => { setData(date); setDateSelectionError(""); }}>
                                         {new Date(`${date}T12:00:00`).toLocaleDateString("pt-BR", { weekday: "short", day: "numeric" })}
                                     </button>
                                 ))}
                             </div>
-                            <input id="booking-date" type="date" value={data} min={dataInicial} onChange={handleDateChange} />
+                            {shortDates.length === 0 && <p className="empty-times" role="status">Este negócio ainda não configurou dias de atendimento.</p>}
+                            <input id="booking-date" type="date" aria-describedby={dateSelectionError ? "booking-date-error" : undefined} value={data} min={dataInicial} onChange={handleDateChange} />
+                            {dateSelectionError && <p id="booking-date-error" className="field-error" role="alert">{dateSelectionError}</p>}
                             <h3 className="section-title"><Clock3 size={18} /> Horários disponíveis</h3>
                             <div className="time-groups">
                                 {availabilityLoading && <p className="hint">Carregando horários...</p>}

@@ -1,5 +1,5 @@
 .Register-body {
-    min-height: 100vh;
+    min-height: 100dvh;
 
     display: flex;
     justify-content: center;
@@ -132,6 +132,12 @@
     box-shadow: 0 0 10px rgba(57, 130, 247, .30);
 
     transform: translateY(-2px);
+}
+
+.register-btn:disabled {
+    cursor: wait;
+    opacity: .7;
+    transform: none;
 }
 
 .login {

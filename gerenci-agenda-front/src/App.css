@@ -1,0 +1,24 @@
+.not-found-page {
+    align-items: center;
+    background: var(--color-bg-canvas);
+    color: var(--color-text-primary);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-height: 100dvh;
+    padding: var(--space-6);
+    text-align: center;
+}
+
+.not-found-page p {
+    color: var(--color-text-secondary);
+}
+
+.not-found-page a {
+    align-items: center;
+    display: inline-flex;
+    color: var(--color-primary);
+    justify-content: center;
+    min-height: 44px;
+    padding: var(--space-3);
+}

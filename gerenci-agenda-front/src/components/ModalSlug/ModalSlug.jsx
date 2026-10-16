@@ -2,12 +2,15 @@ import { useState, useEffect } from "react";
 import { atualizarProfile } from "../../services/agendamento";
 import toast from "react-hot-toast";
 import { X } from "lucide-react";
+import useModalAccessibility from "../../hooks/useModalAccessibility";
 
 function ModalSlug({ profile, onClose, onUpdated}) {
 
     const [slug, setSlug] = useState("")
 
     const [loading, setLoading] = useState(false)
+    const hasUnsavedChanges = slug !== (profile?.public_slug || "");
+    const { dialogRef, requestClose } = useModalAccessibility({ onClose, hasUnsavedChanges, canClose: !loading });
 
     async function handleSubmit(e) {
         e.preventDefault();
@@ -56,20 +59,22 @@ function ModalSlug({ profile, onClose, onUpdated}) {
 
     return (
         <div className="modal-overlay"
-            onClick={onClose}>
+            onMouseDown={(event) => {
+                if (event.target === event.currentTarget) requestClose();
+            }}>
 
-            <div className="modal-container modal-container-compact"
+            <div ref={dialogRef} tabIndex="-1" className="modal-container modal-container-compact"
                 role="dialog"
                 aria-modal="true"
                 aria-labelledby="public-link-modal-title"
-                onClick={(e) => e.stopPropagation()}>
+            >
 
                     <div className="modal-header">
                         <div>
                             <h2 id="public-link-modal-title">Editar link público</h2>
                             <p>Escolha um endereço simples para compartilhar com seus clientes.</p>
                         </div>
-                        <button type="button" className="modal-close-button" aria-label="Fechar" onClick={onClose}>
+                        <button type="button" className="modal-close-button" aria-label="Fechar" onClick={requestClose}>
                             <X size={20} />
                         </button>
                     </div>
@@ -95,7 +100,7 @@ function ModalSlug({ profile, onClose, onUpdated}) {
 
                             <button 
                                 type="button"
-                                onClick={onClose}>
+                                onClick={requestClose}>
                                 Cancelar
                             </button>
 

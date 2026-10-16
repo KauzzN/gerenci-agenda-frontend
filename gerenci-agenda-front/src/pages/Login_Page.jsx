@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom"
 import { login } from "../services/auth"
 import { useAuth } from "../hooks/useAuth";
 import './Login_Page.css'
+import "../styles/auth.css";
 
 function Login() {
 
@@ -12,19 +13,27 @@ function Login() {
 
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [submitting, setSubmitting] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
 
   async function handleSubmit(e) {
     e.preventDefault()
+    if (submitting) return;
 
     try {
+      setSubmitting(true);
+      setErrorMessage("");
       const data = await login(username, password);
 
       await authenticate(data.tokens.access_token, data.tokens.refresh_token);
 
       navigate("/dashboard");
     } catch (err) {
-      console.log("Erro login:", err);
-      alert("Login inválido")
+      setErrorMessage(err.response
+        ? err.response.data?.error || "Usuário ou senha inválidos."
+        : "Não foi possível conectar. Verifique sua conexão e tente novamente.");
+    } finally {
+      setSubmitting(false);
     }
     
   }
@@ -46,26 +55,35 @@ function Login() {
           >
 
           <div className='login_box'>
-          
-            <input 
-              type="text" 
-              placeholder=' usuário'
-              className="login-input"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-            />
-            <input 
-              type="password"
-              placeholder=' senha'
-              className="login-input"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-            />
-            
+            <label className="auth-field" htmlFor="login-username">Usuário
+              <input
+                id="login-username"
+                type="text"
+                autoComplete="username"
+                placeholder="Seu usuário"
+                className="login-input"
+                value={username}
+                onChange={(e) => { setUsername(e.target.value); setErrorMessage(""); }}
+                required
+              />
+            </label>
+            <label className="auth-field" htmlFor="login-password">Senha
+              <input
+                id="login-password"
+                type="password"
+                autoComplete="current-password"
+                placeholder="Sua senha"
+                className="login-input"
+                value={password}
+                onChange={(e) => { setPassword(e.target.value); setErrorMessage(""); }}
+                required
+              />
+            </label>
           </div>
 
-          <button type='submit' className="login-btn">
-            Entrar
+          {errorMessage && <p id="login-error" className="auth-error" role="alert">{errorMessage}</p>}
+          <button type='submit' className="login-btn" disabled={submitting}>
+            {submitting ? "Entrando..." : "Entrar"}
           </button>
 
         </form>

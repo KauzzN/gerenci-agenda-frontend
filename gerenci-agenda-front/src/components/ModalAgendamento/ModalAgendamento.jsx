@@ -8,6 +8,7 @@ import {
     listarServicos
 } from "../../services/agendamento";
 import { X } from "lucide-react";
+import useModalAccessibility from "../../hooks/useModalAccessibility";
 import "./ModalAgendamento.css";
 
 function separarHorarioLocal(dataISO) {
@@ -42,7 +43,9 @@ function ModalAgendamento({ onClose, onCreated, agendamento = null, dataInicial 
     const [selecionados, setSelecionados] = useState(initialServiceIds);
     const originalHorario = agendamento?.horario_inicio;
     const horarioLocal = separarHorarioLocal(originalHorario);
-    const [data, setData] = useState(horarioLocal.data || dataInicial || "");
+    const initialData = horarioLocal.data || dataInicial || "";
+    const initialClientId = agendamento ? String(agendamento.cliente_id || "") : "";
+    const [data, setData] = useState(initialData);
     const [horario, setHorario] = useState(horarioLocal.horario);
     const [status, setStatus] = useState(agendamento?.status || "PENDENTE");
     const [loading, setLoading] = useState(false);
@@ -51,6 +54,15 @@ function ModalAgendamento({ onClose, onCreated, agendamento = null, dataInicial 
     const [fieldErrors, setFieldErrors] = useState({});
     const submittingRef = useRef(false);
     const editando = Boolean(agendamento);
+    const hasUnsavedChanges = (
+        String(clienteId || "") !== initialClientId
+        || data !== initialData
+        || horario !== horarioLocal.horario
+        || selecionados.length !== initialServiceIds.length
+        || selecionados.some((id) => !initialServiceIds.includes(id))
+        || (editando && status !== agendamento.status)
+    );
+    const { dialogRef, requestClose } = useModalAccessibility({ onClose, hasUnsavedChanges, canClose: !loading });
 
     async function loadFormData() {
         setPreparing(true);
@@ -155,14 +167,16 @@ function ModalAgendamento({ onClose, onCreated, agendamento = null, dataInicial 
         }
     }
 
-    return <div className="modal-overlay" onClick={onClose}>
-        <div className="modal-container" role="dialog" aria-modal="true" aria-labelledby="appointment-modal-title" onClick={(event) => event.stopPropagation()}>
+    return <div className="modal-overlay" onMouseDown={(event) => {
+        if (event.target === event.currentTarget) requestClose();
+    }}>
+        <div ref={dialogRef} tabIndex="-1" className="modal-container" role="dialog" aria-modal="true" aria-labelledby="appointment-modal-title">
             <div className="modal-header">
                 <div>
                     <h2 id="appointment-modal-title">{editando ? "Editar Agendamento" : "Novo Agendamento"}</h2>
                     <p>Informe o cliente, serviço e horário do atendimento.</p>
                 </div>
-                <button type="button" className="modal-close-button" aria-label="Fechar" onClick={onClose}>
+                <button type="button" className="modal-close-button" aria-label="Fechar" onClick={requestClose}>
                     <X size={20} />
                 </button>
             </div>
@@ -233,7 +247,7 @@ function ModalAgendamento({ onClose, onCreated, agendamento = null, dataInicial 
                     <option value="FALTOU">Faltou</option>
                 </select>}
                 <div className="modal-actions">
-                    <button type="button" onClick={onClose}>Cancelar</button>
+                    <button type="button" onClick={requestClose}>Cancelar</button>
                     <button type="submit" disabled={loading}>{loading ? "Salvando..." : "Salvar"}</button>
                 </div>
             </form>}

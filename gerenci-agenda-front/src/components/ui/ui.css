@@ -22,3 +22,31 @@
 .ui-search-field {
     transition-property: background-color, border-color, box-shadow;
 }
+.ui-search-label {
+    clip-path: inset(50%);
+    left: 1px;
+    top: 1px;
+    white-space: nowrap;
+}
+
+.ui-search-field button {
+    min-height: 36px;
+    min-width: 36px;
+}
+
+.ui-spinner {
+    animation: ui-spin 800ms linear infinite;
+    flex: 0 0 auto;
+}
+
+@keyframes ui-spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .ui-spinner {
+        animation: none;
+    }
+}

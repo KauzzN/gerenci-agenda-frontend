@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
 import Login from './pages/Login_Page.jsx';
 import Register from './pages/Register_page.jsx';
 import Dashboard from './pages/Dashboard_page.jsx';
@@ -26,6 +26,13 @@ function App() {
         <Route path="/servicos" element={<PrivateRoute><ServicesPage /></PrivateRoute>} />
         <Route path="/clientes" element={<PrivateRoute><ClientsPage /></PrivateRoute>} />
         <Route path="/historico" element={<PrivateRoute><HistoryPage /></PrivateRoute>} />
+        <Route path="*" element={
+          <main className="not-found-page">
+            <h1>Página não encontrada</h1>
+            <p>O endereço pode estar incorreto ou não está mais disponível.</p>
+            <Link to="/">Voltar para o início</Link>
+          </main>
+        } />
       </Routes>
     </BrowserRouter>
   )

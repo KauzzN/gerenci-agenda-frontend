@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom"
 import { register } from "../services/auth"
 import { useAuth } from "../hooks/useAuth";
 import "./Register_page.css"
+import "../styles/auth.css";
 
 function Register () {
 
@@ -13,19 +14,27 @@ function Register () {
     const [username,setUsername] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const [submitting, setSubmitting] = useState(false);
+    const [errorMessage, setErrorMessage] = useState("");
 
     async function handleSubmit(e) {
         e.preventDefault()
+        if (submitting) return;
 
         try {
+            setSubmitting(true);
+            setErrorMessage("");
             const data = await register(username, email, password);
 
             await authenticate(data.tokens.access_token, data.tokens.refresh_token);
 
             navigate("/dashboard");
         } catch (err) {
-            console.log("Erro login:", err);
-            alert("Cadastro inválido")
+            setErrorMessage(err.response
+                ? err.response.data?.error || "Não foi possível concluir o cadastro. Verifique os dados informados."
+                : "Não foi possível conectar. Verifique sua conexão e tente novamente.");
+        } finally {
+            setSubmitting(false);
         }
     }
     
@@ -48,35 +57,48 @@ function Register () {
 
                     <div className="register-box">
 
-                        <input 
-                            type="text"
-                            placeholder="Nome de usuário"
-                            autoComplete="current-password"
-                            className="register-input"
-                            value={username}
-                            onChange={(e) => setUsername(e.target.value)}
-                        />
-                        <input 
-                            type="email"
-                            placeholder="Email"
-                            autoComplete="email"
-                            className="register-input"   
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
-                        />
-                        <input 
-                            type="password"
-                            placeholder="Senha"
-                            autoComplete="new-password"
-                            className="register-input"
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
-                        />
+                        <label className="auth-field" htmlFor="register-username">Nome de usuário
+                            <input
+                                id="register-username"
+                                type="text"
+                                placeholder="Seu nome de usuário"
+                                autoComplete="username"
+                                className="register-input"
+                                value={username}
+                                onChange={(e) => { setUsername(e.target.value); setErrorMessage(""); }}
+                                required
+                            />
+                        </label>
+                        <label className="auth-field" htmlFor="register-email">Email
+                            <input
+                                id="register-email"
+                                type="email"
+                                placeholder="seu@email.com"
+                                autoComplete="email"
+                                className="register-input"
+                                value={email}
+                                onChange={(e) => { setEmail(e.target.value); setErrorMessage(""); }}
+                                required
+                            />
+                        </label>
+                        <label className="auth-field" htmlFor="register-password">Senha
+                            <input
+                                id="register-password"
+                                type="password"
+                                placeholder="Crie uma senha"
+                                autoComplete="new-password"
+                                className="register-input"
+                                value={password}
+                                onChange={(e) => { setPassword(e.target.value); setErrorMessage(""); }}
+                                required
+                            />
+                        </label>
 
                     </div>
 
-                    <button type="submit" className="register-btn">
-                        Cadastrar
+                    {errorMessage && <p id="register-error" className="auth-error" role="alert">{errorMessage}</p>}
+                    <button type="submit" className="register-btn" disabled={submitting}>
+                        {submitting ? "Cadastrando..." : "Cadastrar"}
                     </button>
                 </form>
 

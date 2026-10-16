@@ -1,0 +1,12 @@
+.auth-field {
+    color: var(--text-secondary);
+    display: grid;
+    gap: 8px;
+    text-align: left;
+}
+
+.auth-error {
+    color: #fca5a5;
+    margin: 0;
+    text-align: center;
+}

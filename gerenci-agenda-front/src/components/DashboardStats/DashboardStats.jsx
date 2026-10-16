@@ -1,8 +1,5 @@
 import "./DashboardStats.css"
-import { useEffect } from "react";
-import { buscarDashboard } from "../../services/agendamento"
-import { useState } from "react";
-import { UsersIcon, CheckCircle, Clock4Icon, UserRoundXIcon } from "lucide-react";
+import { CalendarDays, CheckCircle, Clock4Icon, UserRoundXIcon } from "lucide-react";
 
 
 function DashboardStats ({ stats }) {
@@ -15,16 +12,16 @@ function DashboardStats ({ stats }) {
 
             <div className="stat-card stat-card-overall">
                 <div className="stat-card-info">
-                    <p>Clientes hoje</p>
+                    <p>Agendamentos hoje</p>
                 </div>
 
                 <div className="stat-icons">
                     <h2>{stats.total ?? 0}</h2>
-                    <UsersIcon 
-                    className="icon-users"
+                    <CalendarDays
+                    className="icon-calendar"
                     size={24}/>
                 </div>
-                <p>Agendamentos</p>
+                <p>Total do dia</p>
             </div>
 
             <div className="stat-card stat-card-success">

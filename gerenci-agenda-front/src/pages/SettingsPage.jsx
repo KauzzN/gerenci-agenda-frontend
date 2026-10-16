@@ -111,6 +111,12 @@ function SettingsPage() {
     function validate() {
         const errors = {};
         const hasActiveDay = profile.dias_funcionando?.length > 0;
+        if (hasActiveDay && !profile.horario_inicio) {
+            errors.horario_inicio = "Informe o início do expediente.";
+        }
+        if (hasActiveDay && !profile.horario_fim) {
+            errors.horario_fim = "Informe o fim do expediente.";
+        }
         if (profile.horario_inicio && profile.horario_fim && profile.horario_inicio >= profile.horario_fim) {
             errors.horario_fim = "O fim do expediente deve ser depois do início.";
         }
@@ -231,8 +237,8 @@ function SettingsPage() {
                         </div>
                         {profile.dias_funcionando?.length === 0 && <p className="settings-hint">Nenhum dia configurado.</p>}
                         <div className="time-grid">
-                            <label>Início do expediente<input aria-label="Início do expediente" name="horario_inicio" type="time" disabled={!profile.dias_funcionando?.length} value={profile.horario_inicio || ""} onChange={updateField} /></label>
-                            <label>Fim do expediente<input aria-label="Fim do expediente" name="horario_fim" type="time" disabled={!profile.dias_funcionando?.length} value={profile.horario_fim || ""} onChange={updateField} />{fieldErrors.horario_fim && <span className="field-error">{fieldErrors.horario_fim}</span>}</label>
+                            <label>Início do expediente<input aria-label="Início do expediente" aria-required={Boolean(profile.dias_funcionando?.length)} aria-invalid={Boolean(fieldErrors.horario_inicio)} aria-describedby={fieldErrors.horario_inicio ? "horario-inicio-error" : undefined} name="horario_inicio" type="time" disabled={!profile.dias_funcionando?.length} value={profile.horario_inicio || ""} onChange={updateField} />{fieldErrors.horario_inicio && <span id="horario-inicio-error" className="field-error" role="alert">{fieldErrors.horario_inicio}</span>}</label>
+                            <label>Fim do expediente<input aria-label="Fim do expediente" aria-required={Boolean(profile.dias_funcionando?.length)} aria-invalid={Boolean(fieldErrors.horario_fim)} aria-describedby={fieldErrors.horario_fim ? "horario-fim-error" : undefined} name="horario_fim" type="time" disabled={!profile.dias_funcionando?.length} value={profile.horario_fim || ""} onChange={updateField} />{fieldErrors.horario_fim && <span id="horario-fim-error" className="field-error" role="alert">{fieldErrors.horario_fim}</span>}</label>
                             <label>Início do intervalo<input aria-label="Início do almoço" name="inicio_almoco" type="time" disabled={!profile.dias_funcionando?.length} value={profile.inicio_almoco || ""} onChange={updateField} />{fieldErrors.inicio_almoco && <span className="field-error">{fieldErrors.inicio_almoco}</span>}</label>
                             <label>Fim do intervalo<input aria-label="Fim do almoço" name="fim_almoco" type="time" disabled={!profile.dias_funcionando?.length} value={profile.fim_almoco || ""} onChange={updateField} />{fieldErrors.fim_almoco && <span className="field-error">{fieldErrors.fim_almoco}</span>}</label>
                         </div>

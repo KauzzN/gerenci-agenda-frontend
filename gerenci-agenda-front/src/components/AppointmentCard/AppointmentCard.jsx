@@ -17,57 +17,52 @@ function AppointmentCard({ agendamento, onEdit, onCancel, canceling }) {
     }[agendamento.status] || "var(--color-border-strong)"
 
     return (
-        <div 
+        <article
             className="card-container"
             style={{
                 "--status-color": statusColor
             }}
-            role="button"
-            tabIndex="0"
-            onClick={() => {
-                onEdit(agendamento)}}
-            onKeyDown={(event) => {
-                if (event.key === "Enter" || event.key === " ") {
-                    event.preventDefault()
-                    onEdit(agendamento)
-                }
-            }}
-                >
-            
-
-            <div className="card-time">
-                <div className="card-time-range">
-                    <h2>{dataFormatada.horario}</h2>
-                    <span>até</span>
-                    <h2>{formatarDataCard(agendamento.horario_fim).horario}</h2>
+        >
+            <button
+                type="button"
+                className="card-main-button"
+                aria-label={`Editar agendamento de ${agendamento.cliente}. ${dataFormatada.dia}, das ${dataFormatada.horario} às ${formatarDataCard(agendamento.horario_fim).horario}. Serviços: ${serviceNames.join(", ") || "não informado"}.`}
+                onClick={() => onEdit(agendamento)}
+            >
+                <div className="card-time">
+                    <div className="card-time-range">
+                        <h2>{dataFormatada.horario}</h2>
+                        <span>até</span>
+                        <h2>{formatarDataCard(agendamento.horario_fim).horario}</h2>
+                    </div>
+                    <p>{dataFormatada.dia}</p>
                 </div>
-                <p>{dataFormatada.dia}</p>
-            </div>
 
-            <div className="card-name">
-                <h3>{agendamento.cliente}</h3>
-                <small>Cliente agendado</small>
-                <div className="card-services" aria-label={serviceNames.length > 0 ? `Serviços: ${serviceNames.join(", ")}` : "Serviço não informado"}>
-                    {serviceNames.length > 0 ? (
-                        <>
-                            <span className="card-service-names">
-                                {visibleServiceNames.join(" · ")}
-                                {additionalServiceCount > 0 && ` +${additionalServiceCount}`}
-                            </span>
-                            <span className="service-color-indicators" aria-hidden="true">
-                                {visibleServices.map((service, index) => (
-                                    <span
-                                        className="service-color-indicator"
-                                        key={`${typeof service === "string" ? service : service.nome}-${index}`}
-                                        style={{ "--service-color": /^#[0-9A-Fa-f]{3,8}$/.test(service?.cor || "") ? service.cor : "var(--color-border-strong)" }}
-                                    />
-                                ))}
-                                {services.length > 3 && <span className="service-color-more">+{services.length - 3}</span>}
-                            </span>
-                        </>
-                    ) : "Serviço não informado"}
+                <div className="card-name">
+                    <h3>{agendamento.cliente}</h3>
+                    <small>Cliente agendado</small>
+                    <div className="card-services" aria-label={serviceNames.length > 0 ? `Serviços: ${serviceNames.join(", ")}` : "Serviço não informado"}>
+                        {serviceNames.length > 0 ? (
+                            <>
+                                <span className="card-service-names">
+                                    {visibleServiceNames.join(" · ")}
+                                    {additionalServiceCount > 0 && ` +${additionalServiceCount}`}
+                                </span>
+                                <span className="service-color-indicators" aria-hidden="true">
+                                    {visibleServices.map((service, index) => (
+                                        <span
+                                            className="service-color-indicator"
+                                            key={`${typeof service === "string" ? service : service.nome}-${index}`}
+                                            style={{ "--service-color": /^#[0-9A-Fa-f]{3,8}$/.test(service?.cor || "") ? service.cor : "var(--color-border-strong)" }}
+                                        />
+                                    ))}
+                                    {services.length > 3 && <span className="service-color-more">+{services.length - 3}</span>}
+                                </span>
+                            </>
+                        ) : "Serviço não informado"}
+                    </div>
                 </div>
-            </div>
+            </button>
 
             <div className="card-actions">
                 <StatusBadge status={agendamento.status } />
@@ -76,8 +71,7 @@ function AppointmentCard({ agendamento, onEdit, onCancel, canceling }) {
                         type="button"
                         className="cancel-appointment-button"
                         disabled={canceling}
-                        onClick={(event) => {
-                            event.stopPropagation();
+                        onClick={() => {
                             onCancel(agendamento);
                         }}
                     >
@@ -85,7 +79,7 @@ function AppointmentCard({ agendamento, onEdit, onCancel, canceling }) {
                     </button>
                 )}
             </div>
-        </div>
+        </article>
     )
 }
 

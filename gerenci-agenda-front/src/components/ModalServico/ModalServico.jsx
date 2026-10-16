@@ -3,6 +3,7 @@ import toast from "react-hot-toast";
 import { criarServico, listarServicos } from "../../services/agendamento";
 import "../ModalAgendamento/ModalAgendamento.css";
 import { X } from "lucide-react";
+import useModalAccessibility from "../../hooks/useModalAccessibility";
 
 function ModalServico({ onClose }) {
     const [nome, setNome] = useState("");
@@ -12,6 +13,8 @@ function ModalServico({ onClose }) {
     const [cor, setCor] = useState("#000000");
     const [servicos, setServicos] = useState([]);
     const [loading, setLoading] = useState(false);
+    const hasUnsavedChanges = Boolean(nome || preco || duracao || descricao || cor !== "#000000");
+    const { dialogRef, requestClose } = useModalAccessibility({ onClose, hasUnsavedChanges, canClose: !loading });
 
     async function carregarServicos() {
         try {
@@ -66,14 +69,16 @@ function ModalServico({ onClose }) {
     }
 
     return (
-        <div className="modal-overlay" onClick={onClose}>
-            <div className="modal-container" role="dialog" aria-modal="true" aria-labelledby="service-modal-title" onClick={(event) => event.stopPropagation()}>
+        <div className="modal-overlay" onMouseDown={(event) => {
+            if (event.target === event.currentTarget) requestClose();
+        }}>
+            <div ref={dialogRef} tabIndex="-1" className="modal-container" role="dialog" aria-modal="true" aria-labelledby="service-modal-title">
                 <div className="modal-header">
                     <div>
                         <h2 id="service-modal-title">Novo serviço</h2>
                         <p>Cadastre os serviços disponíveis para seus clientes.</p>
                     </div>
-                    <button type="button" className="modal-close-button" aria-label="Fechar" onClick={onClose}>
+                    <button type="button" className="modal-close-button" aria-label="Fechar" onClick={requestClose}>
                         <X size={20} />
                     </button>
                 </div>
@@ -114,7 +119,7 @@ function ModalServico({ onClose }) {
                     </div>
 
                     <div className="modal-actions">
-                        <button type="button" onClick={onClose}>Fechar</button>
+                        <button type="button" onClick={requestClose}>Fechar</button>
                         <button type="submit" disabled={loading}>
                             {loading ? "Salvando..." : "Cadastrar serviço"}
                         </button>
