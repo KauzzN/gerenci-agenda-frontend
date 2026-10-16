@@ -1,5 +1,5 @@
-import { createContext, useEffect, useState } from "react";
-import { saveTokens, clearTokens, getAccess } from "../utils/token";
+import { createContext, useEffect, useRef, useState } from "react";
+import { saveTokens, clearTokens } from "../utils/token";
 import { me } from "../services/auth";
 
 export const AuthContext = createContext()
@@ -11,6 +11,7 @@ export function AuthProvider({ children }) {
     });
 
   const [user, setUser] = useState(null);
+  const requestIdRef = useRef(0);
 
   // Enquanto existir um token salvo, a sessão precisa ser validada em
   // "/usr/me" antes de liberar as rotas privadas.
@@ -22,8 +23,9 @@ export function AuthProvider({ children }) {
 
     saveTokens(access_token, refresh_token)
 
+    setUser(null)
     setAccessToken(access_token)
-    setAuthChecking(false)
+    setAuthChecking(true)
   }
 
   function logout() {
@@ -37,10 +39,13 @@ export function AuthProvider({ children }) {
   }
 
   useEffect(() => {
+    const requestId = requestIdRef.current + 1;
+    requestIdRef.current = requestId;
 
     async function carregarUsuario() {
 
         if (!accessToken) {
+            setUser(null);
             setAuthChecking(false);
             return;
         }
@@ -51,12 +56,19 @@ export function AuthProvider({ children }) {
 
             const usuario = await me();
 
-            setUser(usuario);
-            setAuthChecking(false);
+            if (requestId === requestIdRef.current) {
+              setUser(usuario);
+              setAuthChecking(false);
+            }
 
         } catch {
 
-            logout();
+            if (requestId === requestIdRef.current) {
+              clearTokens();
+              setAccessToken(null);
+              setUser(null);
+              setAuthChecking(false);
+            }
 
         }
 

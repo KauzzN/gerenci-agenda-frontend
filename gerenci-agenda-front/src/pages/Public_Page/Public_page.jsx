@@ -208,12 +208,26 @@ function PublicPage() {
         morning: horarios.filter(({ horario }) => Number(horario?.slice(0, 2)) < 12),
         afternoon: horarios.filter(({ horario }) => Number(horario?.slice(0, 2)) >= 12)
     };
+    const dayNames = ["domingo", "segunda", "terca", "quarta", "quinta", "sexta", "sabado"];
+    function isWorkingDate(date) {
+        const configuredDays = Array.isArray(profile?.dias_funcionando) ? profile.dias_funcionando : [];
+        const weekday = new Date(`${date}T12:00:00`).getDay();
+        return configuredDays.some((configuredDay) => {
+            if (typeof configuredDay === "number") return configuredDay === (weekday === 0 ? 6 : weekday - 1);
+            if (typeof configuredDay !== "string") return false;
+            const normalized = configuredDay.trim().toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+            return normalized === dayNames[weekday] || normalized === `${dayNames[weekday]}-feira`;
+        });
+    }
     const shortDates = Array.from({ length: 5 }, (_, index) => {
         const date = new Date(`${dataInicial}T12:00:00`);
         date.setDate(date.getDate() + index);
         return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`;
-    });
+    }).filter(isWorkingDate);
     const profileDetails = ["endereco", "telefone", "instagram", "descricao"].filter((key) => profile?.[key]);
+    function handleDateChange(event) {
+        if (isWorkingDate(event.target.value)) setData(event.target.value);
+    }
 
     return (
         <main className="public-page"><div className="public-card">
@@ -225,7 +239,48 @@ function PublicPage() {
                 {bookingCompleted ? <section className="success-card" role="status" aria-live="polite"><div className="success-icon" aria-hidden="true"><CheckCircle2 size={36}/></div><h2>Agendamento confirmado!</h2><p>Seu horário foi reservado com sucesso.</p><div className="summary"><div className="summary-item"><span>Data</span><strong>{confirmedBooking?.data}</strong></div><div className="summary-item"><span>Horário</span><strong>{confirmedBooking?.horario}</strong></div><div className="summary-item"><span>Cliente</span><strong>{confirmedBooking?.nome}</strong></div></div><div className="success-actions"><button type="button" className="schedule-button" onClick={() => { setBookingCompleted(false); setStep(0); }}>Novo agendamento</button><button type="button" className="text-button" onClick={() => setBookingCompleted(false)}><X size={16}/> Fechar</button></div></section> : <section className="wizard-stage">
                     {step === 0 && <div className="stage"><h2><User size={20}/> Seus dados</h2><p className="hint">Usaremos estas informações para identificar seu agendamento.</p><label className="field-label" htmlFor="client-name">Nome</label><input id="client-name" placeholder="Seu nome" value={nome} onChange={(e) => { setNome(e.target.value); setFieldErrors((current) => ({ ...current, nome: null })); }}/>{fieldErrors.nome && <p className="field-error" role="alert">{fieldErrors.nome}</p>}<label className="field-label" htmlFor="client-phone">Telefone</label><input id="client-phone" placeholder="Seu telefone" value={telefone} onChange={(e) => { setTelefone(e.target.value); setFieldErrors((current) => ({ ...current, telefone: null })); }}/>{fieldErrors.telefone && <p className="field-error" role="alert">{fieldErrors.telefone}</p>}<button type="button" className="schedule-button" onClick={async () => { if (isClientAuthenticated || await autenticar()) setStep(1); }} disabled={authLoading}>{authLoading ? "Identificando..." : "Continuar"}</button></div>}
                     {step === 1 && <div className="stage"><button type="button" className="back-button" onClick={() => setStep(0)} aria-label="Voltar para seus dados">← Voltar</button><h2><ClipboardList size={20}/> Escolha os serviços</h2>{servicos.length === 0 ? <p className="empty-times">Este negócio ainda não possui serviços disponíveis.</p> : <div className="service-list">{servicos.map((servico) => { const id = Number(servico.id); return <label className={servicosSelecionados.includes(id) ? "service-option selected" : "service-option"} key={id}><input type="checkbox" checked={servicosSelecionados.includes(id)} onChange={() => { setServicosSelecionados((current) => current.includes(id) ? current.filter((value) => value !== id) : [...current, id]); setFieldErrors((current) => ({ ...current, servicos: null })); setBookingCompleted(false); }}/><span>{servico.nome}</span></label>; })}</div>}{fieldErrors.servicos && <p className="field-error" role="alert">{fieldErrors.servicos}</p>}<button type="button" className="schedule-button" onClick={() => { if (!servicosSelecionados.length) { setFieldErrors({ servicos: "Selecione ao menos um serviço." }); return; } setStep(2); }} disabled={!servicos.length}>Escolher data e hora</button></div>}
-                    {step === 2 && <div className="stage"><button type="button" className="back-button" onClick={() => setStep(1)} aria-label="Voltar para escolha de serviços">← Voltar</button><h2><Calendar size={20}/> Data e horário</h2><label className="field-label" htmlFor="booking-date">Data</label><div className="date-strip" aria-label="Datas próximas">{shortDates.map((date) => <button type="button" key={date} className={date === data ? "date-chip selected" : "date-chip"} onClick={() => setData(date)}>{new Date(`${date}T12:00:00`).toLocaleDateString("pt-BR", { weekday: "short", day: "numeric" })}</button>)}</div>                    <input id="booking-date" type="date" value={data} min={dataInicial} onChange={(e) => setData(e.target.value)}/><h3 className="section-title"><Clock3 size={18}/> Horários disponíveis</h3><div className="time-groups">{availabilityLoading && <p className="hint">Carregando horários...</p>}{!availabilityLoading && !availabilityError && groupedHorarios.morning.length > 0 && <><h4>Manhã</h4><div className="time-grid">{groupedHorarios.morning.map(({ horario }) => <button type="button" key={horario} className={horarioSelecionado === horario ? "time-button selected" : "time-button"} onClick={() => setHorarioSelecionado(horario)}>{horario}</button>)}</div></>}{!availabilityLoading && !availabilityError && groupedHorarios.afternoon.length > 0 && <><h4>Tarde</h4><div className="time-grid">{groupedHorarios.afternoon.map(({ horario }) => <button type="button" key={horario} className={horarioSelecionado === horario ? "time-button selected" : "time-button"} onClick={() => setHorarioSelecionado(horario)}>{horario}</button>)}</div></>}{availabilityError && <div role="alert" className="empty-times"><p>{availabilityError}</p><button type="button" className="time-button" onClick={carregarHorarios}>Tentar novamente</button></div>}{!availabilityLoading && !availabilityError && horarios.length === 0 && servicosSelecionados.length > 0 && <div className="empty-times">Nenhum horário disponível para esta data.</div>}</div><button type="button" className="schedule-button" onClick={() => setStep(3)} disabled={!horarioSelecionado}>Revisar agendamento</button></div>}
+                    {step === 2 && (
+                        <div className="stage">
+                            <button type="button" className="back-button" onClick={() => setStep(1)} aria-label="Voltar para escolha de serviços">← Voltar</button>
+                            <h2><Calendar size={20} /> Data e horário</h2>
+                            <label className="field-label" htmlFor="booking-date">Data</label>
+                            <div className="date-strip" aria-label="Datas próximas">
+                                {shortDates.map((date) => (
+                                    <button type="button" key={date} className={date === data ? "date-chip selected" : "date-chip"} onClick={() => setData(date)}>
+                                        {new Date(`${date}T12:00:00`).toLocaleDateString("pt-BR", { weekday: "short", day: "numeric" })}
+                                    </button>
+                                ))}
+                            </div>
+                            <input id="booking-date" type="date" value={data} min={dataInicial} onChange={handleDateChange} />
+                            <h3 className="section-title"><Clock3 size={18} /> Horários disponíveis</h3>
+                            <div className="time-groups">
+                                {availabilityLoading && <p className="hint">Carregando horários...</p>}
+                                {!availabilityLoading && !availabilityError && groupedHorarios.morning.length > 0 && (
+                                    <>
+                                        <h4>Manhã</h4>
+                                        <div className="time-grid">
+                                            {groupedHorarios.morning.map(({ horario }) => (
+                                                <button type="button" key={horario} className={horarioSelecionado === horario ? "time-button selected" : "time-button"} onClick={() => setHorarioSelecionado(horario)}>{horario}</button>
+                                            ))}
+                                        </div>
+                                    </>
+                                )}
+                                {!availabilityLoading && !availabilityError && groupedHorarios.afternoon.length > 0 && (
+                                    <>
+                                        <h4>Tarde</h4>
+                                        <div className="time-grid">
+                                            {groupedHorarios.afternoon.map(({ horario }) => (
+                                                <button type="button" key={horario} className={horarioSelecionado === horario ? "time-button selected" : "time-button"} onClick={() => setHorarioSelecionado(horario)}>{horario}</button>
+                                            ))}
+                                        </div>
+                                    </>
+                                )}
+                                {availabilityError && <div role="alert" className="empty-times"><p>{availabilityError}</p><button type="button" className="time-button" onClick={carregarHorarios}>Tentar novamente</button></div>}
+                                {!availabilityLoading && !availabilityError && horarios.length === 0 && servicosSelecionados.length > 0 && <div className="empty-times">Nenhum horário disponível para esta data.</div>}
+                            </div>
+                            <button type="button" className="schedule-button" onClick={() => setStep(3)} disabled={!horarioSelecionado}>Revisar agendamento</button>
+                        </div>
+                    )}
                     {step === 3 && <div className="stage"><button type="button" className="back-button" onClick={() => setStep(2)} aria-label="Voltar para data e horário">← Voltar</button><h2><ClipboardList size={20}/> Revise seu agendamento</h2><div className="summary"><div className="summary-item"><span>Serviços</span><strong>{servicosSelecionados.length} selecionado(s)</strong></div><div className="summary-item"><span>Data</span><strong>{data}</strong></div><div className="summary-item"><span>Horário</span><strong>{horarioSelecionado || "--:--"}</strong></div><div className="summary-item"><span>Cliente</span><strong>{nome || "..."}</strong></div></div><button type="button" className="schedule-button" disabled={loading || authLoading || bookingCompleted} onClick={handleAgendar}>{bookingCompleted ? "Agendamento confirmado" : loading ? "Agendando..." : "Confirmar agendamento"}</button></div>}
                 </section>}
             </>}

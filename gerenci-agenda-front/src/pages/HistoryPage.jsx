@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import toast from "react-hot-toast";
 import PanelLayout from "../components/PanelLayout/PanelLayout";
 import StatusBadge from "../components/StatusBadge/StatusBadge";
@@ -49,17 +49,24 @@ function HistoryPage() {
     const [loading, setLoading] = useState(true);
     const [loadError, setLoadError] = useState("");
     const [query, setQuery] = useState("");
+    const requestIdRef = useRef(0);
 
     async function loadHistory() {
+        const requestId = requestIdRef.current + 1;
+        requestIdRef.current = requestId;
         try {
             setLoading(true);
             setLoadError("");
-            setItems(await listarHistorico());
+            setItems([]);
+            const nextItems = await listarHistorico();
+            if (requestId === requestIdRef.current) setItems(nextItems);
         } catch {
-            setLoadError("Não foi possível carregar o histórico. Tente novamente.");
-            toast.error("Não foi possível carregar o histórico.");
+            if (requestId === requestIdRef.current) {
+                setLoadError("Não foi possível carregar o histórico. Tente novamente.");
+                toast.error("Não foi possível carregar o histórico.");
+            }
         } finally {
-            setLoading(false);
+            if (requestId === requestIdRef.current) setLoading(false);
         }
     }
 

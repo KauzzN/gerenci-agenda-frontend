@@ -30,17 +30,24 @@ function ServicesPage() {
     const [saving, setSaving] = useState(false);
     const [fieldErrors, setFieldErrors] = useState({});
     const savingRef = useRef(false);
+    const requestIdRef = useRef(0);
 
     async function loadServices() {
+        const requestId = requestIdRef.current + 1;
+        requestIdRef.current = requestId;
         try {
             setLoading(true);
             setLoadError("");
-            setServices(await listarServicos());
+            setServices([]);
+            const data = await listarServicos();
+            if (requestId === requestIdRef.current) setServices(Array.isArray(data) ? data : []);
         } catch {
-            setLoadError("Não foi possível carregar os serviços. Tente novamente.");
-            toast.error("Não foi possível carregar os serviços.");
+            if (requestId === requestIdRef.current) {
+                setLoadError("Não foi possível carregar os serviços. Tente novamente.");
+                toast.error("Não foi possível carregar os serviços.");
+            }
         } finally {
-            setLoading(false);
+            if (requestId === requestIdRef.current) setLoading(false);
         }
     }
 

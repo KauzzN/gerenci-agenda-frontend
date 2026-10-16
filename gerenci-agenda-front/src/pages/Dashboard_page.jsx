@@ -20,6 +20,7 @@ import ModalServico from "../components/ModalServico/ModalServico";
 import "../components/PanelLayout/PanelLayout.css";
 import PanelNavigation from "../components/PanelNavigation/PanelNavigation";
 import { construirLinkPublico } from "../utils/publicLink";
+import LoadingState from "../components/ui/LoadingState";
 
 function dataLocalAtual() {
     const data = new Date();
@@ -272,7 +273,7 @@ function Dashboard () {
             )}
 
             {initialLoading && (
-                <p>Carregando dashboard...</p>
+                <LoadingState label="Carregando dashboard..." />
             )}
 
             {!initialLoading && dashboardErrorType === "network" && (

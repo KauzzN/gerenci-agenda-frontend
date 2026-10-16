@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import toast from "react-hot-toast";
 import PanelLayout from "../components/PanelLayout/PanelLayout";
 import { listarClientes } from "../services/agendamento";
@@ -15,18 +15,26 @@ function ClientsPage() {
     const [query, setQuery] = useState("");
     const [loading, setLoading] = useState(true);
     const [loadError, setLoadError] = useState("");
+    const requestIdRef = useRef(0);
 
     async function loadClients() {
+        const requestId = requestIdRef.current + 1;
+        requestIdRef.current = requestId;
         try {
             setLoading(true);
             setLoadError("");
+            setClients([]);
             const data = await listarClientes();
-            setClients(Array.isArray(data) ? data : []);
+            if (requestId === requestIdRef.current) {
+                setClients(Array.isArray(data) ? data : []);
+            }
         } catch {
-            setLoadError("Não foi possível carregar os clientes. Tente novamente.");
-            toast.error("Não foi possível carregar os clientes.");
+            if (requestId === requestIdRef.current) {
+                setLoadError("Não foi possível carregar os clientes. Tente novamente.");
+                toast.error("Não foi possível carregar os clientes.");
+            }
         } finally {
-            setLoading(false);
+            if (requestId === requestIdRef.current) setLoading(false);
         }
     }
 

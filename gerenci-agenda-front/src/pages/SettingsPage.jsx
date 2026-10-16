@@ -7,6 +7,7 @@ import Surface from "../components/ui/Surface";
 import { atualizarProfile, buscarProfile } from "../services/agendamento";
 import { useAuth } from "../hooks/useAuth";
 import { construirLinkPublico } from "../utils/publicLink";
+import LoadingState from "../components/ui/LoadingState";
 import "./SettingsPage.css";
 
 const emptyProfile = {
@@ -42,12 +43,19 @@ function SettingsPage() {
     const [saveState, setSaveState] = useState(null);
     const [loadError, setLoadError] = useState("");
     const savingRef = useRef(false);
+    const requestIdRef = useRef(0);
     const publicLink = construirLinkPublico(profile.public_slug);
 
     useEffect(() => {
         async function loadProfile() {
+            const requestId = requestIdRef.current + 1;
+            requestIdRef.current = requestId;
             try {
+                setLoading(true);
+                setLoadError("");
+                setProfile(emptyProfile);
                 const data = await buscarProfile();
+                if (requestId !== requestIdRef.current) return;
                 setLoadError("");
                 setProfile({
                     ...emptyProfile,
@@ -59,6 +67,7 @@ function SettingsPage() {
                     fim_almoco: normalizarHorario(data.fim_almoco)
                 });
             } catch (error) {
+                if (requestId !== requestIdRef.current) return;
                 if (error.response?.status !== 404) {
                     setLoadError("Não foi possível carregar as configurações.");
                     toast.error("Não foi possível carregar as configurações.");
@@ -66,7 +75,7 @@ function SettingsPage() {
                     setLoadError("Seu perfil ainda não está configurado.");
                 }
             } finally {
-                setLoading(false);
+                if (requestId === requestIdRef.current) setLoading(false);
             }
         }
         loadProfile();
@@ -174,7 +183,7 @@ function SettingsPage() {
                     title="Configurações"
                     description="Controle como sua agenda funciona."
                 />
-            {loading ? <p>Carregando configurações...</p> : loadError ? (
+            {loading ? <LoadingState label="Carregando configurações..." /> : loadError ? (
                 <Surface className="settings-state" role="alert">
                     <p>{loadError}</p>
                     <button type="button" onClick={() => window.location.reload()}>Tentar novamente</button>
