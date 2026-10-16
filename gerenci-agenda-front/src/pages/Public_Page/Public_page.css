@@ -14,7 +14,6 @@
     padding: 0;
 }
 @media(max-width:480px) {
-    .wizard-stage > .stage > .schedule-button { position:fixed; z-index:5; left:14px; right:14px; bottom:calc(12px + env(safe-area-inset-bottom)); width:auto; margin:0; }
     .wizard-stage { padding-bottom:8px; }
 }
 
