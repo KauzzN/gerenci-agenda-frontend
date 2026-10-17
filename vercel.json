@@ -1,0 +1,11 @@
+{
+  "installCommand": "npm install --prefix gerenci-agenda-front",
+  "buildCommand": "npm run build --prefix gerenci-agenda-front",
+  "outputDirectory": "gerenci-agenda-front/dist",
+  "rewrites": [
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
+    }
+  ]
+}
