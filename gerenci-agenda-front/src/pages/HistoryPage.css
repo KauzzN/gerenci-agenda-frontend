@@ -55,6 +55,13 @@
     gap: var(--space-1);
 }
 
+.history-total {
+    color: var(--color-text-primary);
+    display: block;
+    font-size: var(--text-small);
+    margin-top: var(--space-2);
+}
+
 @media (max-width: 600px) {
     .history-group .panel-list li {
         align-items: flex-start;

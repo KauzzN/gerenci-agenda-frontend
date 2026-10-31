@@ -1,5 +1,6 @@
 import "./AppointmentCard.css"
 import { formatarDataCard } from "../../utils/formatarHorario"
+import { formatarMoeda } from "../../utils/formatarMoeda"
 import StatusBadge from "../StatusBadge/StatusBadge"
 
 function AppointmentCard({ agendamento, onEdit, onCancel, canceling }) {
@@ -61,6 +62,9 @@ function AppointmentCard({ agendamento, onEdit, onCancel, canceling }) {
                             </>
                         ) : "Serviço não informado"}
                     </div>
+                    {agendamento.valor_total !== undefined && (
+                        <strong className="card-total">Total: {formatarMoeda(agendamento.valor_total)}</strong>
+                    )}
                 </div>
             </button>
 

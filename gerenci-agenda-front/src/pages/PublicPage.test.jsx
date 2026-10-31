@@ -34,7 +34,10 @@ describe("PublicPage", () => {
         publicMocks.buscarProfilePublic.mockResolvedValue({
             nome: "Studio",
             dias_funcionando: [dayNames[tomorrow.getDay()]],
-            servicos: [{ id: 7, nome: "Corte", preco: "30", duracao: 30 }]
+            servicos: [
+                { id: 7, nome: "Corte", preco: "30.00", duracao: 30, descricao: "Corte tradicional" },
+                { id: 8, nome: "Barba", preco: "22.50", duracao: 20 }
+            ]
         });
         publicMocks.buscarHorarios.mockResolvedValue({ horarios: [] });
     });
@@ -50,6 +53,10 @@ describe("PublicPage", () => {
 
         fireEvent.click(await screen.findByRole("button", { name: "Continuar" }));
         fireEvent.click(screen.getByRole("checkbox", { name: "Corte" }));
+        expect(screen.getAllByText("R$ 30,00")).toHaveLength(2);
+        expect(screen.getByText("R$ 30,00", { selector: "strong" })).toBeTruthy();
+        fireEvent.click(screen.getByRole("checkbox", { name: "Barba" }));
+        expect(screen.getByText("R$ 52,50")).toBeTruthy();
         fireEvent.click(screen.getByRole("button", { name: "Escolher data e hora" }));
 
         const dateInput = await screen.findByLabelText("Data");

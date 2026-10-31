@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import toast from "react-hot-toast";
 import {
     atualizarAgendamento,
@@ -9,6 +9,7 @@ import {
 } from "../../services/agendamento";
 import { X } from "lucide-react";
 import useModalAccessibility from "../../hooks/useModalAccessibility";
+import { formatarMoeda, formatarTotalCentavos, somarPrecos } from "../../utils/formatarMoeda";
 import "./ModalAgendamento.css";
 
 function separarHorarioLocal(dataISO) {
@@ -63,6 +64,10 @@ function ModalAgendamento({ onClose, onCreated, agendamento = null, dataInicial 
         || (editando && status !== agendamento.status)
     );
     const { dialogRef, requestClose } = useModalAccessibility({ onClose, hasUnsavedChanges, canClose: !loading });
+    const selecionadosDetalhes = useMemo(() => servicos.filter((servico) => (
+        selecionados.includes(servico.id)
+    )), [selecionados, servicos]);
+    const totalSelecionado = somarPrecos(selecionadosDetalhes);
 
     async function loadFormData() {
         setPreparing(true);
@@ -202,12 +207,16 @@ function ModalAgendamento({ onClose, onCreated, agendamento = null, dataInicial 
                 {fieldErrors.clienteId && <p className="field-error" role="alert">{fieldErrors.clienteId}</p>}
                 <fieldset>
                     <legend>Serviços</legend>
+                    {servicos.length === 0 && <p>Nenhum serviço cadastrado.</p>}
                     {servicos.map((servico) => {
                         const id = servico.id;
-                        return <label className="service-option" key={id}>
+                        const selected = selecionados.includes(id);
+                        const inactive = servico.ativo === false;
+                        return <label className={selected ? "service-option selected" : "service-option"} key={id}>
                             <input type="checkbox"
                                 aria-label={servico.nome}
-                                checked={selecionados.includes(id)}
+                                checked={selected}
+                                disabled={inactive && !selected}
                                 onChange={() => {
                                     setSelecionados((current) => current.includes(id)
                                         ? current.filter((value) => value !== id) : [...current, id]);
@@ -218,11 +227,27 @@ function ModalAgendamento({ onClose, onCreated, agendamento = null, dataInicial 
                                 aria-hidden="true"
                                 style={{ "--service-color": /^#[0-9A-Fa-f]{3,8}$/.test(servico.cor || "") ? servico.cor : "var(--color-border-strong)" }}
                             />
-                            <span>{servico.nome}</span>
+                            <span className="service-option-content">
+                                <span className="service-option-heading">
+                                    <strong>{servico.nome}</strong>
+                                    <span className="service-option-price">{formatarMoeda(servico.preco)}</span>
+                                </span>
+                                <span className="service-option-meta">
+                                    {servico.duracao} min{inactive ? " · Inativo" : ""}
+                                </span>
+                                {servico.descricao && <span className="service-option-description">{servico.descricao}</span>}
+                            </span>
+                            <span className="service-selection-indicator" aria-hidden="true">
+                                {selected ? "Selecionado" : inactive ? "Indisponível" : "Selecionar"}
+                            </span>
                         </label>;
                     })}
                 </fieldset>
                 {fieldErrors.servicos && <p className="field-error" role="alert">{fieldErrors.servicos}</p>}
+                {selecionados.length > 0 && <div className="service-total" aria-live="polite">
+                    <span>{selecionados.length} serviço(s) selecionado(s)</span>
+                    <strong>{formatarTotalCentavos(totalSelecionado)}</strong>
+                </div>}
                 <input
                     aria-label="Data"
                     type="date"

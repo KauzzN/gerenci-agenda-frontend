@@ -10,6 +10,7 @@ import LoadingState from "../components/ui/LoadingState";
 import ErrorState from "../components/ui/ErrorState";
 import EmptyState from "../components/ui/EmptyState";
 import Button from "../components/ui/Button";
+import { formatarMoeda } from "../utils/formatarMoeda";
 
 const historyTimeZone = "America/Fortaleza";
 
@@ -129,6 +130,7 @@ function HistoryPage() {
                                                     ))}
                                                 </div>
                                             ) : <p>Serviço não informado</p>}
+                                            {item.valor_total !== undefined && <strong className="history-total">Total: {formatarMoeda(item.valor_total)}</strong>}
                                             {item.horario_fim && <small>Até {formatTime(item.horario_fim)}</small>}
                                         </div>
                                         <StatusBadge status={item.status} />

@@ -372,9 +372,28 @@
 .stage h2 svg, .section-title svg { color: var(--primary); }
 .hint { color: var(--text-secondary); font-size: .9rem; }
 .service-list { display: grid; gap: 10px; }
-.service-option { display: flex; align-items: center; gap: 12px; padding: 14px; border: 1px solid var(--border); border-radius: 12px; cursor: pointer; color: var(--text-primary); }
+.service-option { align-items: flex-start; display: flex; gap: 12px; padding: 14px; border: 1px solid var(--border); border-radius: 12px; cursor: pointer; color: var(--text-primary); }
 .service-option.selected { border-color: var(--primary); background: rgba(59,130,246,.1); }
-.service-option input { width: auto; accent-color: var(--primary); }
+.service-option input { flex: 0 0 auto; margin-top: 4px; width: auto; accent-color: var(--primary); }
+.service-option-content { display: grid; flex: 1; gap: 4px; min-width: 0; }
+.service-option-heading { align-items: baseline; display: flex; gap: 10px; justify-content: space-between; }
+.service-option-heading strong { overflow-wrap: anywhere; }
+.service-option-price { color: var(--primary); font-weight: 700; white-space: nowrap; }
+.service-option-meta, .service-option-description { color: var(--text-secondary); font-size: .85rem; }
+.service-option-description { overflow-wrap: anywhere; }
+.service-selection-indicator { border: 1px solid var(--border); border-radius: 999px; color: var(--text-secondary); flex: 0 0 auto; font-size: .72rem; padding: 4px 8px; }
+.service-option.selected .service-selection-indicator { border-color: var(--primary); color: var(--primary); }
+.service-total { align-items: center; border-top: 1px solid var(--border); display: flex; justify-content: space-between; margin-top: 14px; padding-top: 14px; }
+.service-total span { color: var(--text-secondary); font-size: .9rem; }
+.service-total strong, .summary-total { color: var(--primary); font-size: 1.05rem; }
+.summary-services > div { display: grid; gap: 6px; width: 100%; }
+.summary-service { display: flex; gap: 12px; justify-content: space-between; }
+.summary-service strong { font-weight: 600; }
+.summary-total { border-top: 1px solid rgba(255,255,255,.1); margin-top: 4px; padding-top: 8px; text-align: right; }
+@media (max-width: 480px) {
+    .service-option-heading { align-items: flex-start; flex-direction: column; gap: 2px; }
+    .service-selection-indicator { font-size: .68rem; }
+}
 .date-strip { display:flex; gap:8px; overflow-x:auto; padding:2px 0 10px; scrollbar-width:thin; }
 .date-chip { align-items:center; display:inline-flex; flex:0 0 auto; min-height:44px; padding:10px 12px; border:1px solid var(--border); border-radius:11px; background:var(--bg-primary); color:var(--text-secondary); cursor:pointer; text-transform:capitalize; }
 .date-chip.selected { color:var(--primary); border-color:var(--primary); background:rgba(59,130,246,.12); }

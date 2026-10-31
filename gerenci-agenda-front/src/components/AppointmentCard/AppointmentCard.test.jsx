@@ -12,7 +12,8 @@ const appointment = {
     horario_inicio: "2026-10-16T15:00:00Z",
     horario_fim: "2026-10-16T16:00:00Z",
     status: "PENDENTE",
-    servicos: ["Corte"]
+    servicos: [{ id: 7, nome: "Corte", preco_unitario: "30.00" }],
+    valor_total: "30.00"
 };
 
 describe("AppointmentCard", () => {
@@ -27,6 +28,7 @@ describe("AppointmentCard", () => {
         expect(onEdit).not.toHaveBeenCalled();
         fireEvent.click(cancelButton);
         expect(onCancel).toHaveBeenCalledWith(appointment);
+        expect(screen.getByText("Total: R$ 30,00")).toBeTruthy();
     });
 
     it("expõe um botão de edição próprio para teclado e tecnologias assistivas", () => {

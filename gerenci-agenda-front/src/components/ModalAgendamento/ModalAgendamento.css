@@ -185,9 +185,85 @@
     color: var(--color-text-primary);
 }
 
+.service-option.selected {
+    background: var(--color-primary-soft);
+    border-color: var(--color-primary);
+    color: var(--color-text-primary);
+}
+
+.service-option:has(input:disabled) {
+    cursor: not-allowed;
+    opacity: .65;
+}
+
 .service-option input {
     accent-color: var(--color-primary);
+    flex: 0 0 auto;
+    margin-top: 4px;
     min-height: auto;
+}
+
+.service-option-content {
+    display: grid;
+    flex: 1;
+    gap: 4px;
+    min-width: 0;
+}
+
+.service-option-heading {
+    align-items: baseline;
+    display: flex;
+    gap: var(--space-2);
+    justify-content: space-between;
+}
+
+.service-option-heading strong,
+.service-option-description {
+    overflow-wrap: anywhere;
+}
+
+.service-option-price {
+    color: var(--color-primary);
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+.service-option-meta,
+.service-option-description {
+    color: var(--color-text-secondary);
+    font-size: var(--text-small);
+}
+
+.service-selection-indicator {
+    border: 1px solid var(--color-border-subtle);
+    border-radius: var(--radius-pill);
+    color: var(--color-text-secondary);
+    flex: 0 0 auto;
+    font-size: var(--text-caption);
+    padding: var(--space-1) var(--space-2);
+}
+
+.service-option.selected .service-selection-indicator {
+    border-color: var(--color-primary);
+    color: var(--color-primary);
+}
+
+.service-total {
+    align-items: center;
+    border-top: 1px solid var(--color-border-subtle);
+    display: flex;
+    justify-content: space-between;
+    padding-top: var(--space-3);
+}
+
+.service-total span {
+    color: var(--color-text-secondary);
+    font-size: var(--text-small);
+}
+
+.service-total strong {
+    color: var(--color-primary);
+    font-size: var(--text-body);
 }
 
 .service-color-indicator {
@@ -277,5 +353,15 @@
 
     .modal-actions {
         flex-direction: column-reverse;
+    }
+
+    .service-option-heading {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: var(--space-1);
+    }
+
+    .service-selection-indicator {
+        font-size: .68rem;
     }
 }
