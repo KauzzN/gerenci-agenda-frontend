@@ -9,24 +9,27 @@ import {
     saveClientTokens,
     clearClientTokens
 } from "../utils/token";
+import { normalizeApiBaseUrl } from "./apiBaseUrl";
+
+const baseURL = normalizeApiBaseUrl(import.meta.env.VITE_API_URL);
 
 const api = axios.create({
-    baseURL: import.meta.env.VITE_API_URL,
+    baseURL,
     headers: {
         "Content-Type": "application/json"
     }
 });
 
 const refreshApi = axios.create({
-    baseURL: import.meta.env.VITE_API_URL
+    baseURL
 })
 
 const publicApi = axios.create({
-    baseURL: import.meta.env.VITE_API_URL
+    baseURL
 })
 
 const clientApi = axios.create({
-    baseURL: import.meta.env.VITE_API_URL,
+    baseURL,
     headers: {
         "Content-Type": "application/json"
     }
